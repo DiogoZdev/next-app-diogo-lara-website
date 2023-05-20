@@ -1,3 +1,3 @@
-# New version of diogolara-dev website [work in progess]
+# New version of diogolara.dev website [work in progress]
 
-made with NextJS.
+## made with NextJS.
