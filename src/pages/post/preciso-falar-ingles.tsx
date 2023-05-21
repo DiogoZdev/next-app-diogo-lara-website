@@ -19,7 +19,7 @@ export default function DoINeedToSpeakEnglish() {
           Por isso, acredito que uma regra importante é manter um código
           profissional em inglês, incluindo não apenas a sintaxe da linguagem de
           programação, mas também os nomes das variáveis e funções. Imagine
-          contribuir para projetos "open-source" com colaboradores de diferentes
+          contribuir para projetos open-source com colaboradores de diferentes
           nacionalidades. A comunicação em inglês é uma forma universal de se
           comunicar, mas implementar pequenos trechos de código com termos em
           línguas nativas pode dificultar a compreensão do que foi feito.
@@ -39,37 +39,52 @@ export default function DoINeedToSpeakEnglish() {
           Se você está buscando dicas, aqui estão 4 dicas para melhorar seu
           inglês:
         </p>
-        <p>
-          Aprenda os termos da sua regra de negócio em inglês e crie um
-          glossário para documentar termos e segur fielmente. Com o tempo, esses
-          termos serão cada vez mais naturais. Não tente usar termos rebuscados
-          e complexos. Quanto mais simples, melhor, tanto para quem quer
-          entender o código quanto a regra do negócio. Evite também o uso de
-          gírias. Em inglês, a presença do sujeito é fundamental para uma frase
-          estar gramaticalmente correta. Diferentemente do português, onde o
-          sujeito pode ser oculto em algumas situações, em inglês é preciso
-          sempre deixar claro quem é o sujeito da frase. Por exemplo, em
-          português é possível dizer "É importante" ou "Sou administrador" sem
-          mencionar o sujeito da frase, já que o verbo conjugado é suficiente
-          para indicar quem é o sujeito. No entanto, em inglês não é possível
-          ocultar o sujeito dessa forma, sendo necessário usar um pronome
-          adequado para indicar quem ou o que está realizando a ação. Sendo
-          assim, a tradução correta de "É importante" para o inglês seria "It is
-          important", onde "it" é usado como um pronome indefinido para indicar
-          que algo é importante. Da mesma forma, a tradução de "Sou
-          administrador" seria "I am an administrator", onde "I" é usado como
-          pronome para indicar que “”eu” sou um administrador. Levando em
-          consideração a regra anterior, já reparou como o “it” aparece com
-          frequência no inglês? Se não reparou, fica a dica. Um detalhe
-          interessante são arquivos de teste, considerando Jest, por exemplo, já
-          percebeu que um caso de teste começa normalmente com “it” ? Se estou
-          falando de algo que não é classificado como masculino ou feminino,
-          sejam objetos, histórias, regras, qualquer coisa, use “it”
-        </p>
-        <code>
-          // deve validar o token ...
-          it {'("Should validate the token", () => { ... })'}
-        </code>
+        <ol>
+          <li>
+            <p>
+              Aprenda os termos da sua regra de negócio em inglês e crie um
+              glossário para documentar termos e segur fielmente. Com o tempo,
+              esses termos serão cada vez mais naturais.
+            </p>
+          </li>
+          <li>
+            <p>
+              Não tente usar termos rebuscados e complexos. Quanto mais simples,
+              melhor, tanto para quem quer entender o código quanto a regra do
+              negócio. Evite também o uso de gírias.
+            </p>
+          </li>
+          <li>
+            <p>
+              Em inglês, a presença do sujeito é fundamental para uma frase
+              estar gramaticalmente correta. Diferentemente do português, onde o
+              sujeito pode ser oculto em algumas situações, em inglês é preciso
+              sempre deixar claro quem é o sujeito da frase. Por exemplo, em
+              português é possível dizer -É importante- ou -Sou administrador-
+              sem mencionar o sujeito da frase, já que o verbo conjugado é
+              suficiente para indicar quem é o sujeito. No entanto, em inglês
+              não é possível ocultar o sujeito dessa forma, sendo necessário
+              usar um pronome adequado para indicar quem ou o que está
+              realizando a ação. Sendo assim, a tradução correta de -É
+              importante- para o inglês seria -It is important-, onde -it- é
+              usado como um pronome indefinido para indicar que algo é
+              importante. Da mesma forma, a tradução de -Sou administrador-
+              seria -I am an administrator-, onde -I- é usado como pronome para
+              indicar que -eu- sou um administrador.
+            </p>
+          </li>
+          <li>
+            <p>
+              Levando em consideração a regra anterior, já reparou como o -it-
+              aparece com frequência no inglês? Se não reparou, fica a dica. Um
+              detalhe interessante são arquivos de teste, considerando Jest, por
+              exemplo, já percebeu que um caso de teste começa normalmente com
+              -it- ? Se estou falando de algo que não é classificado como
+              masculino ou feminino, sejam objetos, histórias, regras, qualquer
+              coisa, use -it-
+            </p>
+          </li>
+        </ol>
         <p>
           Se você já tem um inglês em um nível bacana, parabéns! Isso é
           maravilhoso e espero que compartilhe do mesmo sentimento que eu.

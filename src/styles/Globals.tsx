@@ -14,7 +14,11 @@ export default function GlobalStyles() {
       }
 
       ul {
-        list-style: none;
+        list-style-type: none;
+      }
+
+      ol {
+        padding-left: 1rem;
       }
 
       .stripe {
@@ -59,6 +63,28 @@ export default function GlobalStyles() {
         font-size: 18px;
         line-height: 1.5;
       }
+
+      pre {
+        background-color: #000;
+        padding: 1rem;
+        border-radius: 8px;
+        max-width: 80ch;
+        margin: 1rem 0;
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      ::-webkit-scrollbar-track {
+        background: var(--layer-000);
+      }
+
+      ::-webkit-scrollbar-thumb {
+        background: var(--accent);
+        border-radius: 8px;
+      }
+
     `}</style>
   );
 }
