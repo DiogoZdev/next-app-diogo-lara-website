@@ -22,7 +22,7 @@ export const Me = () => (
       <div className="me-bg">
         <Image
           className="me-image"
-          src="https://diogolara.dev/assets/images/diogo.svg"
+          src="diogo.svg"
           alt="Diogo Lara"
           width={200}
           height={200}
