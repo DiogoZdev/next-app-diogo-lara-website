@@ -7,7 +7,6 @@ interface ProjectProps {
   image: string;
   description: string;
   technologies: string[];
-  tags: string[];
   githubUrl: string;
   websiteUrl?: string;
   alt?: string;
@@ -18,7 +17,6 @@ export const ProjectCard = ({
   image,
   description,
   technologies,
-  tags,
   githubUrl,
   websiteUrl,
   alt,
@@ -30,9 +28,7 @@ export const ProjectCard = ({
       <style jsx>{`
         .project-card {
           display: flex;
-          height: 200px;
           margin: 2rem 0;
-          {/* cursor: pointer; */}
         }
 
         .project-card:nth-child(odd) {
@@ -44,6 +40,10 @@ export const ProjectCard = ({
           background: var(--gradient-bg-transparent);
         }
 
+        .project-card-image {
+          height: 220px;
+        }
+
         .project-card-info {
           width: 100%;
           padding: 1rem;
@@ -52,12 +52,13 @@ export const ProjectCard = ({
           gap: .5rem;
         }
 
-        .project-card-technologies, .project-card-tags {
+        .project-card-technologies {
           display: flex;
+          flex-wrap: wrap;
           gap: 1rem;
         }
 
-        .project-card-technologies li, .project-card-tags li {
+        .project-card-technologies li {
           padding: 0.5rem;
           background: var(--accent);
           border-radius: 4px;
@@ -81,9 +82,9 @@ export const ProjectCard = ({
           <Image
             src={image}
             alt={alt ?? "project image"}
-            width={200}
-            height={200}
-            style={{ borderRadius: "8px" }}
+            width={220}
+            height={220}
+            style={{ borderRadius: "8px", padding: "0"  }}
           />
         </div>
         <div className="project-card-info">

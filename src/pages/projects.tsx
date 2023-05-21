@@ -1,5 +1,4 @@
 import { Headline } from "@/components/Headline";
-import { Network } from "@/components/Network";
 import { ProjectCard } from "@/components/ProjectCard";
 import Head from "next/head";
 
@@ -13,11 +12,18 @@ export default function Projects() {
       <Headline title="projetos" />
 
       <ProjectCard
+        title="Diogo Lara Website"
+        image="/projects/diogolara-dev.png"
+        description="Versão 2 do projeto. Inicialmente feito em Angular, agora em NextJS (ReactJS)."
+        technologies={["NextJS", "ReactJS", "Typescript", "CSS"]}
+        githubUrl="https://github.com/diogozdev/next-app-diogo-lara-dev"
+      ></ProjectCard>
+
+      <ProjectCard
         title="Andressa Ilustra"
         image="/projects/ilustra-1.png"
         description="Portfolio da ilustradora Andressa Araujo"
-        technologies={["Angular", "Typescript", "Scss"]}
-        tags={["react", "typescript", "next"]}
+        technologies={["Angular", "Typescript", "SCSS"]}
         githubUrl="https://github.com/diogozdev/ilustra"
         websiteUrl="https://andressailustra.art"
       ></ProjectCard>
@@ -27,7 +33,6 @@ export default function Projects() {
         image="/projects/sergio-genealogia.png"
         description="Em memória ao genealogista e amigo Sérgio Ricardo (1961 - 2023)"
         technologies={["HTML", "CSS", "Github Pages"]}
-        tags={["frontend", "landing-page"]}
         githubUrl="https://github.com/sergiogenealogia"
         websiteUrl="https://sergiogenealogia.github.io"
       ></ProjectCard>
@@ -37,7 +42,6 @@ export default function Projects() {
         image="/projects/orbit.png"
         description="Projeto em desenvolvimento"
         technologies={["Angular", "Typescript", "Scss", "NestJS", "SQL"]}
-        tags={["full-stack", "social", "Work In Progress"]}
         githubUrl="https://github.com/diogozdev/social-orbit"
       ></ProjectCard>
     </>
