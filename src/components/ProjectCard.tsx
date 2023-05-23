@@ -21,7 +21,6 @@ export const ProjectCard = ({
   websiteUrl,
   alt,
 }: ProjectProps) => {
-
   const iconsSize = 28;
   return (
     <>
@@ -34,6 +33,17 @@ export const ProjectCard = ({
         .project-card:nth-child(odd) {
           display: flex;
           flex-direction: row-reverse;
+        }
+
+        @media (max-width: 500px) {
+          .project-card {
+            flex-direction: column;
+          }
+
+          .project-card:nth-child(odd) {
+            display: flex;
+            flex-direction: column;
+          }
         }
 
         .project-card:hover {
@@ -49,7 +59,7 @@ export const ProjectCard = ({
           padding: 1rem;
           display: flex;
           flex-direction: column;
-          gap: .5rem;
+          gap: 0.5rem;
         }
 
         .project-card-technologies {
@@ -74,7 +84,6 @@ export const ProjectCard = ({
         a:hover {
           color: var(--accent);
         }
-
       `}</style>
 
       <div className="project-card">
@@ -84,7 +93,11 @@ export const ProjectCard = ({
             alt={alt ?? "project image"}
             width={220}
             height={220}
-            style={{ borderRadius: "8px", padding: "0"  }}
+            style={{
+              borderRadius: "8px",
+              padding: "0",
+              objectFit: "cover",
+            }}
           />
         </div>
         <div className="project-card-info">
@@ -96,13 +109,22 @@ export const ProjectCard = ({
             ))}
           </ul>
           <div className="icons">
-            <Link href={githubUrl ?? "#"} target="_blank" style={{ color: "var(--accent-2)" }}>
-              <GithubLogo size={iconsSize}/>
+            <Link
+              href={githubUrl ?? "#"}
+              target="_blank"
+              style={{ color: "var(--accent-2)" }}
+            >
+              <GithubLogo size={iconsSize} />
             </Link>
-            {websiteUrl && <Link href={websiteUrl} target="_blank" style={{ color: "var(--accent-2)" }}>
-              <Globe size={iconsSize}/>
-            </Link>}
-
+            {websiteUrl && (
+              <Link
+                href={websiteUrl}
+                target="_blank"
+                style={{ color: "var(--accent-2)" }}
+              >
+                <Globe size={iconsSize} />
+              </Link>
+            )}
           </div>
         </div>
       </div>

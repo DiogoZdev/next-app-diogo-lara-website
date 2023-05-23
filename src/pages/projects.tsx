@@ -6,42 +6,42 @@ export default function Projects() {
   return (
     <>
       <Head>
-        <title>Projetos - Diogo Lara</title>
+        <title>Projects - Diogo Lara</title>
       </Head>
 
-      <Headline title="projetos" />
+      <Headline title="projects" />
 
       <ProjectCard
         title="Diogo Lara Website"
         image="/projects/diogolara-dev.png"
-        description="Versão 2 do projeto. Inicialmente feito em Angular, agora em NextJS (ReactJS)."
+        description="Version 2.0 of my website. Initialy made with Angular, now with NextJS (ReactJS)."
         technologies={["NextJS", "ReactJS", "Typescript", "CSS"]}
         githubUrl="https://github.com/diogozdev/next-app-diogo-lara-dev"
       ></ProjectCard>
 
       <ProjectCard
-        title="Andressa Ilustra"
+        title="Andressa's Illustrations"
         image="/projects/ilustra-1.png"
-        description="Portfolio da ilustradora Andressa Araujo"
+        description="Andressa Araujo illustration portfolio"
         technologies={["Angular", "Typescript", "SCSS"]}
         githubUrl="https://github.com/diogozdev/ilustra"
         websiteUrl="https://andressailustra.art"
       ></ProjectCard>
 
       <ProjectCard
-        title="Sérgio Genealogia"
+        title="Sérgio Genealogy"
         image="/projects/sergio-genealogia.png"
-        description="Em memória ao genealogista e amigo Sérgio Ricardo (1961 - 2023)"
+        description="In memory of a great genealogist and friend of mine, Sérgio Ricardo (1961 - 2023)"
         technologies={["HTML", "CSS", "Github Pages"]}
         githubUrl="https://github.com/sergiogenealogia"
         websiteUrl="https://sergiogenealogia.github.io"
       ></ProjectCard>
 
       <ProjectCard
-        title="Orbit"
+        title="Dev Orbit"
         image="/projects/orbit.png"
-        description="Projeto em desenvolvimento"
-        technologies={["Angular", "Typescript", "Scss", "NestJS", "SQL"]}
+        description="New project in progress. Social network application to connect developers."
+        technologies={["Angular", "Typescript", "SCSS", "NestJS", "SQL"]}
         githubUrl="https://github.com/diogozdev/social-orbit"
       ></ProjectCard>
     </>

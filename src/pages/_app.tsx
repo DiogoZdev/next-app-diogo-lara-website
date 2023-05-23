@@ -11,7 +11,7 @@ export default function App({ Component, pageProps }: AppProps) {
     pages: [
       { page: "Home", path: "/" },
       { page: "Blog", path: "/blog" },
-      { page: "Projetos", path: "/projects" },
+      { page: "Projects", path: "/projects" },
     ],
   };
 
