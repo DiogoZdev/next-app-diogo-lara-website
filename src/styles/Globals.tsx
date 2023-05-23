@@ -3,9 +3,10 @@ export default function GlobalStyles() {
     <style global jsx>{`
       @import "./reset.css";
       @import "./colors.css";
+      @import url('https://fonts.googleapis.com/css?family=Sanchez&display=swap');
 
       :root {
-        font-family: Sanchez, monospace, sans-serif;
+        font-family: 'Sanchez', monospace, sans-serif;
       }
 
       body {
