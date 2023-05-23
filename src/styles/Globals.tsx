@@ -1,12 +1,4 @@
-import { Sanchez } from 'next/font/google';
-
 export default function GlobalStyles() {
-
-  const sanchez = Sanchez({
-    variable: '--font-sanchez',
-    weight: '400'
-  });
-
   return (
     <style global jsx>{`
       @import "./reset.css";

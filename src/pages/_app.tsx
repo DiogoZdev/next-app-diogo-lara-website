@@ -1,6 +1,6 @@
 import { Container } from "@/layouts/Container";
 import Footer from "@/components/Footer";
-import {Nav, NavProps } from "@/components/Nav";
+import { Nav, NavProps } from "@/components/Nav";
 import GlobalStyles from "@/styles/Globals";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
@@ -17,10 +17,10 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <>
+      <GlobalStyles />
       <Head>
         <link rel="shortcut icon" href="favicon.svg" type="image/svg" />
       </Head>
-      <GlobalStyles />
       <div className="stripe gradient-bg"></div>
       <Container>
         <>
