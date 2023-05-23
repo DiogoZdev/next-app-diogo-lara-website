@@ -5,7 +5,7 @@ export default function GlobalStyles() {
       @import "./colors.css";
 
       :root {
-        font-family: var(--font-sanchez), monospace, sans-serif;
+        font-family: Sanchez, monospace, sans-serif;
       }
 
       body {
