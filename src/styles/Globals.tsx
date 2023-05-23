@@ -1,11 +1,19 @@
+import { Sanchez } from 'next/font/google';
+
 export default function GlobalStyles() {
+
+  const sanchez = Sanchez({
+    variable: '--font-sanchez',
+    weight: '400'
+  });
+
   return (
     <style global jsx>{`
       @import "./reset.css";
       @import "./colors.css";
 
       :root {
-        font-family: sanchez, monospace, sans-serif;
+        font-family: var(--font-sanchez), monospace, sans-serif;
       }
 
       body {
