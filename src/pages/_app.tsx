@@ -5,6 +5,7 @@ import GlobalStyles from "@/styles/Globals";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import { sanchez } from "@/styles/fonts";
 
 export default function App({ Component, pageProps }: AppProps) {
   const pages: NavProps = {
@@ -16,7 +17,7 @@ export default function App({ Component, pageProps }: AppProps) {
   };
 
   return (
-    <>
+    <div style={sanchez.style}>
       <GlobalStyles />
       <Head>
         <link rel="shortcut icon" href="favicon.svg" type="image/svg" />
@@ -29,6 +30,6 @@ export default function App({ Component, pageProps }: AppProps) {
         </>
       </Container>
       <Footer />
-    </>
+    </div>
   );
 }
