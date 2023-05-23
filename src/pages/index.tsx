@@ -2,11 +2,12 @@ import { Headline } from "@/components/Headline";
 import { Me } from "@/components/Me";
 import { Network } from "@/components/Network";
 import { Section } from "@/layouts/Section";
+import { sanchez } from "@/styles/fonts";
 import Head from "next/head";
 
 export default function Home() {
   return (
-    <>
+    <div className={sanchez.className}>
       <Head>
         <title>Diogo Lara</title>
       </Head>
@@ -43,6 +44,6 @@ export default function Home() {
           </p>
         </>
       </Section>
-    </>
+    </div>
   );
 }
