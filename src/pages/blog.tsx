@@ -12,6 +12,14 @@ export default function Blog() {
       <Headline title="blog" />
 
       <PostCard
+        date="2023/06/10"
+        language="English"
+        preview="A new era has truly started. Do humans have place in it?"
+        title="Empower people with AI"
+        url="artificial-intelligence"
+      />
+
+      <PostCard
         date="2023/04/28"
         language="English"
         preview="Should I learn React ou Angular? How to get results faster? Where to start with so many similar options?"
