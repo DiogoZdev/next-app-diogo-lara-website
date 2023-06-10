@@ -12,11 +12,11 @@ export const Post = ({ children }: PostProps) => {
     <>
       <Headline title="post" />
       <Link href="../blog">
-        <Button>voltar</Button>
+        <Button>back</Button>
       </Link>
       <article>{children}</article>
       <Link href="../blog">
-        <Button>voltar</Button>
+        <Button>back</Button>
       </Link>
     </>
   );

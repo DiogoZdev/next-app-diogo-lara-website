@@ -5,13 +5,21 @@ interface PostCardProps {
   date: string;
   language: string;
   preview: string;
-  url: string
+  url: string;
 }
 
-export const PostCard = ({ date, language, title, preview, url}: PostCardProps) => {
+export const PostCard = ({
+  date,
+  language,
+  title,
+  preview,
+  url,
+}: PostCardProps) => {
   const dateSplit = date.includes("/") ? date.split("/") : date.split("-");
   const dateOrdered =
-    dateSplit[0] < dateSplit[2] ? dateSplit.reverse() : dateSplit;
+    Number.parseInt(dateSplit[0], 10) > Number.parseInt(dateSplit[2], 10)
+      ? dateSplit.reverse()
+      : dateSplit;
 
   return (
     <>
@@ -43,7 +51,7 @@ export const PostCard = ({ date, language, title, preview, url}: PostCardProps) 
           flex-direction: column;
         }
       `}</style>
-      
+
       <Link href={`/post/${url}`}>
         <div className="post-card">
           <div className="date">
