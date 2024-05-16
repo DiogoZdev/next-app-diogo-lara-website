@@ -26,7 +26,11 @@ export const Me = () => (
           alt="Diogo Lara"
           width={200}
           height={200}
-          style={{ filter: "hue-rotate(100deg)", position: "absolute", bottom: 0 }}
+          style={{
+            filter: "hue-rotate(240deg)",
+            position: "absolute",
+            bottom: 0,
+          }}
         />
       </div>
     </div>

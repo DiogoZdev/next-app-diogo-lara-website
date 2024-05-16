@@ -36,14 +36,6 @@ export default function Projects() {
         githubUrl="https://github.com/sergiogenealogia"
         websiteUrl="https://sergiogenealogia.github.io"
       ></ProjectCard>
-
-      <ProjectCard
-        title="Dev Orbit"
-        image="/projects/orbit.png"
-        description="New project in progress. Social network application to connect developers."
-        technologies={["Angular", "Typescript", "SCSS", "NestJS", "SQL"]}
-        githubUrl="https://github.com/diogozdev/social-orbit"
-      ></ProjectCard>
     </>
   );
 }

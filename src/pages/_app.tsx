@@ -1,6 +1,6 @@
 import { Container } from "@/layouts/Container";
 import Footer from "@/components/Footer";
-import {Nav, NavProps } from "@/components/Nav";
+import { Nav, NavProps } from "@/components/Nav";
 import GlobalStyles from "@/styles/Globals";
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
@@ -10,7 +10,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const pages: NavProps = {
     pages: [
       { page: "Home", path: "/" },
-      { page: "Blog", path: "/blog" },
+      // { page: "Blog", path: "/blog" },
       { page: "Projects", path: "/projects" },
     ],
   };
@@ -24,7 +24,7 @@ export default function App({ Component, pageProps }: AppProps) {
       <div className="stripe gradient-bg"></div>
       <Container>
         <>
-          <Nav pages={pages.pages} />
+          {/* <Nav pages={pages.pages} /> */}
           <Component {...pageProps} />
         </>
       </Container>

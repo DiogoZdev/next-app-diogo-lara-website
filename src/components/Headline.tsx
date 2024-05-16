@@ -1,11 +1,10 @@
 interface HeadlineProps {
-  title?: string
+  title?: string;
 }
 
-export const Headline = ({title}: HeadlineProps) => (
+export const Headline = ({ title }: HeadlineProps) => (
   <>
     <style jsx>{`
-        
       h1,
       h2 {
         margin: 0 auto;
@@ -26,7 +25,9 @@ export const Headline = ({title}: HeadlineProps) => (
       }
     `}</style>
 
-  <h1 style={title ? {fontSize: "1.5rem", marginTop: "3rem"} : undefined}>Diogo Lara</h1>
-    <h2>&lt; {title ?? 'web developer'} /&gt;</h2>
+    <h1 style={title ? { fontSize: "1.5rem", marginTop: "3rem" } : undefined}>
+      Diogo Lara
+    </h1>
+    <h2>&lt; {title ?? "web developer"} /&gt;</h2>
   </>
 );

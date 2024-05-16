@@ -1,23 +1,19 @@
 :root {
-    --layer-000: #111;
-    --layer-100: #171717;
-    --layer-200: #282828;
+  --layer-000: #111;
+  --layer-100: #171717;
+  --layer-200: #282828;
 
-    --accent: hsl(342, 96%, 40%);
-    --accent-2: hsl(22, 94%, 60%);
+  --accent: hsl(130, 35%, 35%);
+  --accent-2: hsl(130, 50%, 60%);
 
-    --accent-transparent: hsla(342, 96%, 40%, 0.2);
-    --accent-2-transparent: hsla(22, 94%, 60%, 0.2);
+  --accent-transparent: hsla(130, 35%, 35%, 0.2);
+  --accent-2-transparent: hsla(130, 50%, 60%, 0.2);
 
-    --gradient-bg: linear-gradient(
-        90deg,
-        var(--accent) 0%,
-        var(--accent-2) 100%
-    );
+  --gradient-bg: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
 
-    --gradient-bg-transparent: linear-gradient(
-        90deg,
-        var(--accent-transparent) 0%,
-        var(--accent-2-transparent) 100%
-    );
+  --gradient-bg-transparent: linear-gradient(
+    90deg,
+    var(--accent-transparent) 0%,
+    var(--accent-2-transparent) 100%
+  );
 }
