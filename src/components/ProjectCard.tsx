@@ -1,6 +1,7 @@
 import { GithubLogo, Globe } from "@phosphor-icons/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState } from "react";
 
 interface ProjectProps {
   title: string;
@@ -22,6 +23,14 @@ export const ProjectCard = ({
   alt,
 }: ProjectProps) => {
   const iconsSize = 28;
+  const multipleParagraphs = description.split("//").length > 1;
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  function handleSetIsOpen() {
+    setIsOpen(!isOpen);
+  }
+
   return (
     <>
       <style jsx>{`
@@ -81,6 +90,15 @@ export const ProjectCard = ({
           margin-top: 1rem;
         }
 
+        .read-more {
+          cursor: pointer;
+          background-color: #cb4519;
+          color: white;
+          width: fit-content;
+          padding: 0.1rem 0.5rem;
+          margin-left: auto;
+        }
+
         a:hover {
           color: var(--accent);
         }
@@ -102,7 +120,25 @@ export const ProjectCard = ({
         </div>
         <div className="project-card-info">
           <h2>{title}</h2>
-          <p>{description}</p>
+
+          {multipleParagraphs && (
+            <button className="read-more" onClick={handleSetIsOpen}>
+              read {!isOpen ? "more" : "less"}
+            </button>
+          )}
+
+          {(!isOpen && multipleParagraphs) || !multipleParagraphs ? (
+            <p>{description.split("//")[0]}</p>
+          ) : null}
+
+          {isOpen &&
+            multipleParagraphs &&
+            description
+              .split("//")
+              .map((paragraph) => (
+                <p key={paragraph.slice(0, 10)}>{paragraph}</p>
+              ))}
+
           <ul className="project-card-technologies">
             {technologies.map((tech) => (
               <li key={tech}>{tech}</li>

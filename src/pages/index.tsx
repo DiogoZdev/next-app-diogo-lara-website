@@ -1,9 +1,10 @@
 import { Headline } from "@/components/Headline";
-import { Me } from "@/components/Me";
+// import { Me } from "@/components/Me";
 import { Network } from "@/components/Network";
 import { ProjectCard } from "@/components/ProjectCard";
 import { Section } from "@/layouts/Section";
 import Head from "next/head";
+import { texts } from "../utils/text";
 
 export default function Home() {
   return (
@@ -47,13 +48,21 @@ export default function Home() {
         </>
       </Section>
 
-      <Section title="Projects">
+      <Section title="Projects & Contributions">
         <>
+          <ProjectCard
+            title="Testing With Jest Made Simple"
+            image="/projects/jest.jpeg"
+            description={texts.jest}
+            technologies={["Jest", "NodeJS", "JavaScript"]}
+            githubUrl="https://github.com/diogozdev/Jest"
+          ></ProjectCard>
+
           <ProjectCard
             title="Diogo Lara Website"
             image="/projects/diogolara-dev.png"
             description="Version 2.0 of my website. Initialy made with Angular, now with NextJS (ReactJS)."
-            technologies={["NextJS", "ReactJS", "Typescript", "CSS"]}
+            technologies={["NextJS", "ReactJS", "TypeScript", "CSS"]}
             githubUrl="https://github.com/diogozdev/next-app-diogo-lara-dev"
           ></ProjectCard>
 
@@ -61,7 +70,7 @@ export default function Home() {
             title="Andressa's Illustrations"
             image="/projects/ilustra-1.png"
             description="Andressa Araujo illustration portfolio"
-            technologies={["Angular", "Typescript", "SCSS"]}
+            technologies={["Angular", "TypeScript", "SCSS"]}
             githubUrl="https://github.com/diogozdev/ilustra"
             websiteUrl="https://andressailustra.art"
           ></ProjectCard>
