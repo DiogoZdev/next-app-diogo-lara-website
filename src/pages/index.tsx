@@ -16,7 +16,7 @@ export default function Home() {
       {/* temporary removal for improvement <Me /> */}
 
       <Headline />
-      <Network margin="auto" />
+
       <Section title="A little beyond the code">
         <>
           <p>
@@ -63,15 +63,15 @@ export default function Home() {
             image="/projects/diogolara-dev.png"
             description="Version 2.0 of my website. Initialy made with Angular, now with NextJS (ReactJS)."
             technologies={["NextJS", "ReactJS", "TypeScript", "CSS"]}
-            githubUrl="https://github.com/diogozdev/next-app-diogo-lara-dev"
+            githubUrl="https://github.com/diogozdev/next-app-diogo-lara-website"
           ></ProjectCard>
 
           <ProjectCard
             title="Andressa's Illustrations"
             image="/projects/ilustra-1.png"
             description="Andressa Araujo illustration portfolio"
-            technologies={["Angular", "TypeScript", "SCSS"]}
-            githubUrl="https://github.com/diogozdev/ilustra"
+            technologies={["NextJS", "ReactJS", "TypeScript", "CSS"]}
+            githubUrl="https://github.com/diogozdev/next-app-andressa-ilustra"
             websiteUrl="https://andressailustra.art"
           ></ProjectCard>
 

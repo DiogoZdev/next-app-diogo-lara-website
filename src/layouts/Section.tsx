@@ -10,7 +10,7 @@ export const Section = ({ title, children }: SectionProps) => {
     <>
       <style jsx>{`
         h1 {
-          margin-top: 2rem;
+          margin-top: 4rem;
           font-size: 1.5rem;
           line-height: 2;
           display: block;
