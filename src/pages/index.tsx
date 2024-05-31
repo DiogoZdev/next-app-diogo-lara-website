@@ -5,10 +5,18 @@ import { ProjectCard } from "@/components/ProjectCard";
 import { Section } from "@/layouts/Section";
 import Head from "next/head";
 import { texts } from "../utils/text";
+import { useLanguage } from "@/hooks/useLanguage";
+import { Translate } from "@/components/Translate";
+import React, { useMemo } from "react";
 
 export default function Home() {
-  return (
-    <>
+  const { t, language } = useLanguage();
+
+  const mainPageMemo = useMemo(() => {
+
+    console.log("called MEMO ", language)
+
+    return <>
       <Head>
         <title>Diogo Lara</title>
       </Head>
@@ -17,41 +25,19 @@ export default function Home() {
 
       <Headline />
 
-      <Section title="A little beyond the code">
+      <Section title={t('intro.title')}>
         <>
-          <p>
-            With over 10 years of passion for language learning, I&apos;m
-            constantly seeking new ways to explore different cultures and
-            communicate with people from around the world. Portuguese is my
-            mother language, but, currently, I&apos;m fluent in English, have an
-            advanced knowledge of Spanish, and I&apos;m studying Italian.
-          </p>
-          <p>
-            Since 2017, I&apos;ve had the opportunity to put into practice what
-            I love and work with people from various nationalities. This
-            experience has allowed me to develop valuable interpersonal and
-            intercultural skills, as well as learn to adapt my communication to
-            different contexts.
-          </p>
-          <p>
-            My commitment to creating quality digital solutions for a global
-            audience is a natural extension of this passion. With my language
-            skills and knowledge, I&apos;m capable of creating internationalized
-            products that are accessible and understandable to people from
-            different backgrounds.
-          </p>
-          <p>
-            If you&apos;re looking for a developer who can ensure your product
-            is effective in a large part of the world, I&apos;m available to
-            help.
-          </p>
+          <p>{t('intro.p1')}</p>
+          <p>{t('intro.p2')}</p>
+          <p>{t('intro.p3')}</p>
+          <p>{t('intro.p4')}</p>
         </>
       </Section>
 
-      <Section title="Projects & Contributions">
+      <Section title={t("projects.title")}>
         <>
           <ProjectCard
-            title="Testing With Jest Made Simple"
+            title={t("projects.jest.title")}
             image="/projects/jest.jpeg"
             description={texts.jest}
             technologies={["Jest", "NodeJS", "JavaScript"]}
@@ -59,26 +45,26 @@ export default function Home() {
           ></ProjectCard>
 
           <ProjectCard
-            title="Diogo Lara Website"
+            title={t("projects.diogo_website.title")}
             image="/projects/diogolara-dev.png"
-            description="Version 2.0 of my website. Initialy made with Angular, now with NextJS (ReactJS)."
+            description={t("projects.diogo_website.p1")}
             technologies={["NextJS", "ReactJS", "TypeScript", "CSS"]}
             githubUrl="https://github.com/diogozdev/next-app-diogo-lara-website"
           ></ProjectCard>
 
           <ProjectCard
-            title="Andressa's Illustrations"
+            title={t("projects.andressa.title")}
             image="/projects/ilustra-1.png"
-            description="Andressa Araujo illustration portfolio"
+            description={t("projects.andressa.p1")}
             technologies={["NextJS", "ReactJS", "TypeScript", "CSS"]}
             githubUrl="https://github.com/diogozdev/next-app-andressa-ilustra"
             websiteUrl="https://andressailustra.art"
           ></ProjectCard>
 
           <ProjectCard
-            title="Sérgio Genealogy"
+            title={t("projects.sergio.title")}
             image="/projects/sergio-genealogia.png"
-            description="In memory of a great genealogist and friend of mine, Sérgio Ricardo (1961 - 2023)"
+            description={t("projects.sergio.p1")}
             technologies={["HTML", "CSS", "Github Pages"]}
             githubUrl="https://github.com/sergiogenealogia"
             websiteUrl="https://sergiogenealogia.github.io"
@@ -86,5 +72,12 @@ export default function Home() {
         </>
       </Section>
     </>
+  }, [language])
+
+  return (
+    <div>
+      <Translate/>
+      { mainPageMemo }
+    </div>
   );
 }

@@ -23,7 +23,7 @@ export const ProjectCard = ({
   alt,
 }: ProjectProps) => {
   const iconsSize = 28;
-  const multipleParagraphs = description.split("//").length > 1;
+  const multipleParagraphs = description?.split("//").length > 1;
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -128,13 +128,13 @@ export const ProjectCard = ({
           )}
 
           {(!isOpen && multipleParagraphs) || !multipleParagraphs ? (
-            <p>{description.split("//")[0]}</p>
+            <p>{description?.split("//")[0]}</p>
           ) : null}
 
           {isOpen &&
             multipleParagraphs &&
             description
-              .split("//")
+              ?.split("//")
               .map((paragraph) => (
                 <p key={paragraph.slice(0, 10)}>{paragraph}</p>
               ))}

@@ -1,0 +1,72 @@
+{   
+    "header": {
+        "fullstack_dev": {
+            "eng": "fullstack developer",
+            "por": "desenvolvedor full-stack"
+        }
+    },
+    "intro": {
+        "title": {
+            "eng": "A little beyond the code",
+            "por": "Um pouco além do código"
+        },
+        "p1": {
+            "eng": "With over 10 years of passion for language learning, I'm constantly seeking new ways to explore different cultures and communicate with people from around the world. Portuguese is my mother language, but, currently, I'm fluent in English, have an advanced knowledge of Spanish, and I'm studying Italian and German.",
+            "por": "Depois de mais de 10 anos de amor pelo aprendizado de idiomas, estou constantemente buscando novas formas de explorar diferentes culturas e me comunicar com pessoas ao redor do mundo. Meu idioma materno é o português, mas, atualmente sou fluente em inglês, tenho um bom conhecimento de espanhol e estou estudando italiano e alemão."
+        },
+        "p2": {
+            "eng": "Since 2017, I've had the opportunity to put into practice what I love and work with people from various nationalities. This experience has allowed me to develop valuable interpersonal and intercultural skills, as well as learn to adapt my communication to different contexts.",
+            "por": "Desde 2017 tive a oportunidade de colocar em prática o que amo e trabalhar com pessoas de diferentes nacionalidades. Essa experiência me permitiu desenvolver habilidades interpessoais e culturais valiosas para mim, também pude aprender a adaptar minha comunicação em diferentes contextos."
+        },
+        "p3": {
+            "eng": "My commitment to creating quality digital solutions for a global audience is a natural extension of this passion. With my language skills and knowledge, I'm capable of creating internationalized products that are accessible and understandable to people from different backgrounds.",
+            "por": "Meu compromentimento em criar soluções digitais para um público global é uma extensão dessa paixão. Com minhas habilidades e conhecimentos, posso criar produtos internacionalizados que serão acessíveis e compreendidos por pessoas de diferentes contextos."
+        },
+        "p4": {
+            "eng": "If you're looking for a developer who can ensure your product is effective in a large part of the world, I'm available to help.",
+            "por": "Se você busca um desenvolvedor que pode garantir que seu produto seja eficiente em grande parte do mundo, me coloco à disposição para ajudar."
+        }
+    },
+    "projects": {
+        "title": {
+            "eng": "Projects and contributions",
+            "por": "Projetos e contribuições"
+        },
+        "jest": {
+            "title": {
+                "eng": "Testing with Jest made simple ",
+                "por": "Teste com Jest simplificado (Apenas inglês)"
+            }
+        },
+        "diogo_website": {
+            "title": {
+                "eng": "diogolara.dev website",
+                "por": "Site diogolara.dev"
+            },
+            "p1": {
+                "eng": "Version 2.0 of my website. It has passed through big changes, I just wanted to register. haha",
+                "por": "Versão 2.0 do meu website. Passou por grandes mudanças, quis registrar e reforçar aqui também. haha"
+            }
+        },
+        "andressa": {
+            "title": {
+                "eng": "Andressa's Illustrations",
+                "por": "Andressa Ilustra"
+            },
+            "p1": {
+                "eng": "Andressa Araujo illustration portfolio",
+                "por": "Portfolio de ilustração de Andressa Araujo"
+            }
+        },
+        "sergio": {
+            "title": {
+                "eng": "Sérgio - Genealogist",
+                "por": "Sérgio - Genealogista"
+            },
+            "p1": {
+                "eng": "In memory of a great genealogist and friend of mine, Sérgio Ricardo (1961 - 2023)",
+                "por": "Em memória ao genealogista Sérgio Ricardo, um grande amigo (1961 - 2023)"
+            }
+        }
+    }
+}

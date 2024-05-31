@@ -1,11 +1,15 @@
 import { Network } from "./Network";
+import { useLanguage } from "@/hooks/useLanguage"
 
 interface HeadlineProps {
   title?: string;
 }
 
-export const Headline = ({ title }: HeadlineProps) => (
-  <>
+export const Headline = ({ title }: HeadlineProps) => {
+
+  const { t } = useLanguage()
+
+  return <>
     <style jsx>{`
       .container {
         display: flex;
@@ -39,8 +43,8 @@ export const Headline = ({ title }: HeadlineProps) => (
       <h1 style={title ? { fontSize: "1.5rem", marginTop: "3rem" } : undefined}>
         Diogo Lara
       </h1>
-      <h2>&#123; {title ?? "fullstack developer"} &#125;</h2>
+      <h2>&#123; {title ?? t("header.fullstack_dev") } &#125;</h2>
       <Network />
     </div>
   </>
-);
+};
