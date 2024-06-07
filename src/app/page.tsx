@@ -5,8 +5,10 @@ import { ProjectCard } from "@/components/ProjectCard";
 import { Section } from "@/layouts/Section";
 import Head from "next/head";
 import { texts } from "../utils/text";
+import s from "./ui/home.module.css";
+import { Container } from "@/layouts/Container";
 
-export default function Home() {
+export default function Page() {
   return (
     <>
       <Head>
@@ -14,7 +16,6 @@ export default function Home() {
       </Head>
 
       {/* temporary removal for improvement <Me /> */}
-
       <Headline />
 
       <Section title="A little beyond the code">

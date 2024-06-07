@@ -1,3 +1,5 @@
+'use client'
+
 import { Network } from "./Network";
 
 interface HeadlineProps {
