@@ -1,4 +1,4 @@
-import { Headline } from "@/components/Headline";
+import { Hero } from "@/components/Hero";
 import { PostCard } from "@/components/PostCard";
 import Head from "next/head";
 
@@ -9,7 +9,7 @@ export default function Blog() {
         <title>Blog - Diogo Lara</title>
       </Head>
 
-      <Headline title="blog" />
+      <Hero title="blog" />
 
       <PostCard
         date="2023/06/10"

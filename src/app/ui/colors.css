@@ -1,13 +1,16 @@
 :root {
-  --layer-000: #111;
-  --layer-100: #171717;
+  --layer-000: #191919;
+  --layer-100: #1f1f1f;
   --layer-200: #282828;
 
-  --accent: hsl(130, 35%, 35%);
-  --accent-2: hsl(130, 50%, 60%);
+  --font-color: hsl(0, 0%, 85%);
+  --border-color: hsl(0, 0%, 30%);
 
-  --accent-transparent: hsla(130, 35%, 35%, 0.2);
-  --accent-2-transparent: hsla(130, 50%, 60%, 0.2);
+  --accent: hsl(340, 100%, 49%);
+  --accent-2: hsl(32, 100%, 49%);
+
+  --accent-transparent: hsla(340, 100%, 50%, 0.2);
+  --accent-2-transparent: hsla(32, 100%, 50%, 0.2);
 
   --gradient-bg: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
 

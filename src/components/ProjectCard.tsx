@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { GithubLogo, Globe } from "@phosphor-icons/react";
 import Image from "next/image";
@@ -39,6 +39,8 @@ export const ProjectCard = ({
         .project-card {
           display: flex;
           margin: 2rem 0;
+          border-radius: 8px;
+          border: 1px solid var(--layer-200);
         }
 
         .project-card:nth-child(odd) {
@@ -58,11 +60,12 @@ export const ProjectCard = ({
         }
 
         .project-card:hover {
-          background: var(--gradient-bg-transparent);
+          border: 1px solid var(--border-color);
         }
 
         .project-card-image {
           height: 220px;
+          filter: grayscale(0.5);
         }
 
         .project-card-info {
@@ -81,7 +84,8 @@ export const ProjectCard = ({
 
         .project-card-technologies li {
           padding: 0.5rem;
-          background: var(--accent);
+          background: var(--layer-200);
+          color: var(--font-color);
           border-radius: 4px;
         }
 
@@ -94,10 +98,12 @@ export const ProjectCard = ({
 
         .read-more {
           cursor: pointer;
-          background-color: #cb4519;
+          background-color: var(--accent-2-transparent);
           color: white;
-          width: fit-content;
-          padding: 0.1rem 0.5rem;
+          font-weight: bold;
+          width: 100px;
+          border-radius: 4px;
+          padding: 0.4em 0.8em;
           margin-left: auto;
         }
 

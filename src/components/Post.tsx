@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ReactElement } from "react";
-import { Headline } from "./Headline";
+import { Hero } from "./Hero";
 import { Button } from "./Button";
 
 interface PostProps {
@@ -10,7 +10,7 @@ interface PostProps {
 export const Post = ({ children }: PostProps) => {
   return (
     <>
-      <Headline title="post" />
+      <Hero title="post" />
       <Link href="../blog">
         <Button>back</Button>
       </Link>

@@ -6,10 +6,16 @@ import {
 } from "@phosphor-icons/react";
 
 interface NetworkProps {
-  margin?: 'auto';
+  margin?: string;
+  hover?: string;
+  marginTop?: string;
 }
 
-export const Network = ({margin}: NetworkProps)  => {
+export const Network = ({
+  margin = "auto",
+  marginTop = "2rem",
+  hover,
+}: NetworkProps) => {
   const iconSize = 26;
 
   return (
@@ -20,7 +26,7 @@ export const Network = ({margin}: NetworkProps)  => {
           display: flex;
           width: fit-content;
           gap: 1rem;
-          margin-top: 2rem;
+          margin-top: ${marginTop};
         }
 
         li {
@@ -30,32 +36,32 @@ export const Network = ({margin}: NetworkProps)  => {
         }
 
         a:hover li {
-          color: var(--accent);
+          color: ${hover ? hover : "var(--accent)"};
         }
       `}</style>
 
       <ul className="network">
         <a href="https://linkedin.com/in/diogo-lara" target="_blank">
           <li>
-            <LinkedinLogo size={iconSize} aria-label="Linkedin"/>
+            <LinkedinLogo size={iconSize} aria-label="Linkedin" />
           </li>
         </a>
         <a href="https://github.com/diogozdev" target="_blank">
           <li>
-            <GithubLogo size={iconSize} aria-label="Github"/>
+            <GithubLogo size={iconSize} aria-label="Github" />
           </li>
         </a>
         <a href="mailto:diogo.lara.dev@gmail.com" target="_blank">
           <li>
-            <EnvelopeOpen size={iconSize} aria-label="Email"/>
+            <EnvelopeOpen size={iconSize} aria-label="Email" />
           </li>
         </a>
         <a href="https://wa.me/5543984449774" target="_blank">
           <li>
-            <Phone size={iconSize} aria-label="Phone"/>
+            <Phone size={iconSize} aria-label="Phone" />
           </li>
         </a>
       </ul>
     </>
   );
-}
+};

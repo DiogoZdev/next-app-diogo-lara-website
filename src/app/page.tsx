@@ -1,6 +1,4 @@
-import { Headline } from "@/components/Headline";
-// import { Me } from "@/components/Me";
-import { Network } from "@/components/Network";
+import { Hero } from "@/components/Hero";
 import { ProjectCard } from "@/components/ProjectCard";
 import { Section } from "@/layouts/Section";
 import Head from "next/head";
@@ -11,12 +9,7 @@ import { Container } from "@/layouts/Container";
 export default function Page() {
   return (
     <>
-      <Head>
-        <title>Diogo Lara</title>
-      </Head>
-
-      {/* temporary removal for improvement <Me /> */}
-      <Headline />
+      <Hero />
 
       <Section title="A little beyond the code">
         <>
