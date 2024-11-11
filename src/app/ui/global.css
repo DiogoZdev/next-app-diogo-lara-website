@@ -89,3 +89,22 @@ pre {
   background: var(--accent);
   border-radius: 8px;
 }
+
+label {
+  line-height: 1;
+  margin-top: 0.5rem;
+}
+
+input,
+textarea {
+  border: 1px solid var(--border-color);
+  padding: 0.8rem 1rem;
+  background-color: var(--layer-100);
+  color: var(--font-color);
+  resize: none;
+}
+
+textarea {
+  height: 10rem;
+  columns: 4;
+}
