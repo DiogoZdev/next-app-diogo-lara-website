@@ -2,18 +2,28 @@
 
 import { Container } from "@/layouts/Container";
 import { ContactFormSchema, contactFormSchema } from "@/schemas/contact-form";
+import { postContactForm } from "@/services/post-contact-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { use, useState } from "react";
 import { useForm } from "react-hook-form";
 
 export default function ContactForm() {
+  const [formTitle, setFormTitle] = useState("Send me a message");
+
   const { register, handleSubmit, reset } = useForm<ContactFormSchema>({
     resolver: zodResolver(contactFormSchema),
   });
 
-  function handleContactSubmit(data: ContactFormSchema) {
-    console.log(data);
+  async function handleContactSubmit(data: ContactFormSchema) {
+    try {
+      await postContactForm(data);
 
-    reset();
+      reset();
+
+      setFormTitle("Message sent!");
+    } catch {
+      setFormTitle("Error sending message");
+    }
   }
 
   return (
@@ -46,7 +56,7 @@ export default function ContactForm() {
 
       <Container>
         <div className="contact-form">
-          <h1 className="gradient-text">Send me a message</h1>
+          <h1 className="gradient-text">{formTitle}</h1>
 
           <form onSubmit={handleSubmit(handleContactSubmit)}>
             <label htmlFor="name">Name</label>
