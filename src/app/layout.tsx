@@ -20,6 +20,7 @@ export default function RootLayout({
           <>{children}</>
         </Container>
         <Footer />
+        <div className="stripe gradient-bg"></div>
       </body>
     </html>
   );

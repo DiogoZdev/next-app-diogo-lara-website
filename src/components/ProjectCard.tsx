@@ -10,7 +10,7 @@ interface ProjectProps {
   image: string;
   description: string;
   technologies: string[];
-  githubUrl: string;
+  githubUrl?: string;
   websiteUrl?: string;
   alt?: string;
 }
@@ -65,7 +65,6 @@ export const ProjectCard = ({
 
         .project-card-image {
           height: 220px;
-          filter: grayscale(0.5);
         }
 
         .project-card-info {
@@ -153,13 +152,13 @@ export const ProjectCard = ({
             ))}
           </ul>
           <div className="icons">
-            <Link
+           {githubUrl && <Link
               href={githubUrl ?? "#"}
               target="_blank"
               style={{ color: "var(--accent-2)" }}
             >
               <GithubLogo size={iconsSize} />
-            </Link>
+            </Link>}
             {websiteUrl && (
               <Link
                 href={websiteUrl}
