@@ -1,7 +1,8 @@
 import { Hero } from "@/components/Hero";
-import { ProjectCard } from "@/components/ProjectCard/index";
-import { Section } from "@/layouts/Section";
-import { texts } from "../utils/text";
+import { ProjectCard } from "@/components/ProjectCard";
+import { Section } from "@/components/Section";
+import { texts } from "@/utils/text";
+
 
 export default function Page() {
   return (

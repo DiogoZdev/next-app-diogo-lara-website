@@ -10,6 +10,10 @@
   font-family: "Sanchez", monospace, sans-serif;
 }
 
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 html, body {
   width: 100vw;
   overflow-x: hidden;
@@ -30,12 +34,6 @@ ol {
 
 .stripe {
   height: 1rem;
-}
-
-.center {
-  max-width: 1000px;
-  padding: 1rem;
-  margin: 0 auto;
 }
 
 .gradient-bg {
@@ -77,13 +75,6 @@ pre {
   border-radius: 8px;
   max-width: 80ch;
   margin: 1rem 0;
-}
-
-.wrapper {
-  padding: 1rem;
-  margin: 0 auto;
-  max-width: 1000px;
-  width: 100%;
 }
 
 ::-webkit-scrollbar {

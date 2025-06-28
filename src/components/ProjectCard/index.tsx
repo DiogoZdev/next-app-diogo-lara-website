@@ -2,7 +2,7 @@
 "use client";
 
 import { GithubLogo, Globe } from "@phosphor-icons/react";
-import Image from "next/image";
+import "./style.scss"
 import Link from "next/link";
 import { useState } from "react";
 
@@ -36,19 +36,7 @@ export const ProjectCard = ({
 
   return (
     <>
-      <style jsx>{`
-
-        #card:nth-child(even) #read-more {
-          right: 16rem
-        }
-
-        #card:nth-child(odd) #read-more {
-          right: 2rem
-        }
-
-      `}</style>
-
-      <div id="card" className="relative flex even:flex-row-reverse border-solid border-[1px] border-gray-700 mb-12 rounded-lg">
+      <div id="card" className="relative flex flex-col md:flex-row md:even:flex-row-reverse border-solid border-[1px] border-gray-700 mb-12 rounded-lg">
         <div className="min-w-[220px]">
           <img
             src={image}

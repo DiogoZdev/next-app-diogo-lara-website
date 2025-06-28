@@ -1,3 +1,4 @@
+'use client'
 import Link from "next/link";
 import { ReactElement } from "react";
 import { Hero } from "../Hero";
