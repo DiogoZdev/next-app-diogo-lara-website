@@ -66,7 +66,7 @@ export default function Page() {
               image="/projects/maptriz.png"
               description="Smart Cities management"
               technologies={["Angular", "SCSS", "Java", "Postgres"]}
-              websiteUrl="https://sergiogenealogia.github.io"
+              websiteUrl="https://maptriz.com.br"
             ></ProjectCard>
 
             <ProjectCard
