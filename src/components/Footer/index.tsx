@@ -1,7 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import { GithubLogo, LinkedinLogo, Phone } from "@phosphor-icons/react";
-import { ButtonLink } from "./ButtonLink";
+import { ButtonLink } from "../ButtonLink";
 
 export default function Footer() {
   const iconSize = 30;
@@ -21,7 +22,7 @@ export default function Footer() {
           />
         </div>
 
-        <div className="h-60 bg-[#111] text-white  flex flex-col gap-4 justify-center items-center">
+        <div className="h-60 bg-[#2f2f2f] text-white  flex flex-col gap-4 justify-center items-center">
           <div className="flex gap-4 text-xl">
             <Phone size={iconSize} aria-label="Phone" />
             +55 43 98444-9774
@@ -33,9 +34,7 @@ export default function Footer() {
           />
         </div>
 
-        <div className="h-60 bg-[#222] md:bg-[#111]"></div>
-
-        <div className="h-60 bg-[#111] md:bg-[#222]  text-white  flex flex-col gap-4 justify-center items-center">
+        <div className="h-60 bg-[#111]  text-white  flex flex-col gap-4 justify-center items-center">
           <div className="flex gap-4 text-xl">
             <LinkedinLogo size={iconSize} aria-label="LinkedIn" />
             /diogo-lara
@@ -46,6 +45,16 @@ export default function Footer() {
             variant='WHITE'
           />
         </div>
+
+        <div
+          className="h-60 bg-cover bg-center"
+          style={{ backgroundImage: 'url(/br-bg.jpeg)' }}
+        >
+          <div className="w-full h-full bg-[#000b] flex justify-center items-center">
+            <span className="text-xl font-bold">With love from Brazil 💚</span>
+          </div>
+        </div>
+
       </footer>
     </>
   );

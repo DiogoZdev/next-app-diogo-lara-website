@@ -1,84 +1,99 @@
 import { Hero } from "@/components/Hero";
-import { ProjectCard } from "@/components/ProjectCard";
+import { ProjectCard } from "@/components/ProjectCard/index";
 import { Section } from "@/layouts/Section";
-import Head from "next/head";
 import { texts } from "../utils/text";
-import s from "./ui/home.module.css";
-import { Container } from "@/layouts/Container";
 
 export default function Page() {
   return (
     <>
       <Hero />
 
-      <Section title="A little beyond the code">
-        <>
-          <p>
-            With over 10 years of passion for language learning, I&apos;m
-            constantly seeking new ways to explore different cultures and
-            communicate with people from around the world. Portuguese is my
-            mother language, but, currently, I&apos;m fluent in English, have an
-            advanced knowledge of Spanish, and I&apos;m studying Italian.
-          </p>
-          <p>
-            Since 2017, I&apos;ve had the opportunity to put into practice what
-            I love and work with people from various nationalities. This
-            experience has allowed me to develop valuable interpersonal and
-            intercultural skills, as well as learn to adapt my communication to
-            different contexts.
-          </p>
-          <p>
-            My commitment to creating quality digital solutions for a global
-            audience is a natural extension of this passion. With my language
-            skills and knowledge, I&apos;m capable of creating internationalized
-            products that are accessible and understandable to people from
-            different backgrounds.
-          </p>
-          <p>
-            If you&apos;re looking for a developer who can ensure your product
-            is effective in a large part of the world, I&apos;m available to
-            help.
-          </p>
-        </>
-      </Section>
+      <div className="grid gap-8">
+        <Section title="A little beyond the code">
+          <>
+            <p>
+              With over 10 years of passion for language learning, I&apos;m
+              constantly seeking new ways to explore different cultures and
+              communicate with people from around the world. Portuguese is my
+              mother language, but, currently, I&apos;m fluent in English, have an
+              advanced knowledge of Spanish, and I&apos;m studying Italian.
+            </p>
+            <p>
+              Since 2017, I&apos;ve had the opportunity to put into practice what
+              I love and work with people from various nationalities. This
+              experience has allowed me to develop valuable interpersonal and
+              intercultural skills, as well as learn to adapt my communication to
+              different contexts.
+            </p>
+            <p>
+              My commitment to creating quality digital solutions for a global
+              audience is a natural extension of this passion. With my language
+              skills and knowledge, I&apos;m capable of creating internationalized
+              products that are accessible and understandable to people from
+              different backgrounds.
+            </p>
+            <p>
+              If you&apos;re looking for a developer who can ensure your product
+              is effective in a large part of the world, I&apos;m available to
+              help.
+            </p>
+          </>
+        </Section>
 
-      <Section title="Projects & Contributions">
-        <>
-          <ProjectCard
-            title="Testing With Jest Made Simple"
-            image="/projects/jest.jpeg"
-            description={texts.jest}
-            technologies={["Jest", "NodeJS", "JavaScript"]}
-            githubUrl="https://github.com/diogozdev/Jest"
-          ></ProjectCard>
+        <Section title="Projects & Contributions">
+          <>
+            <ProjectCard
+              title="Oderço"
+              image="/projects/oderco.jpg"
+              description=""
+              technologies={["React", "NestJS", "BullMQ", "Docker", "Postgres"]}
+              githubUrl="https://github.com/oderco-ti"
+              websiteUrl="https://oderco.com.br"
+            ></ProjectCard>
 
-          <ProjectCard
-            title="Diogo Lara Website"
-            image="/projects/diogolara-dev.png"
-            description="Version 2.0 of my website. Initialy made with Angular, now with NextJS (ReactJS)."
-            technologies={["NextJS", "ReactJS", "TypeScript", "CSS"]}
-            githubUrl="https://github.com/diogozdev/next-app-diogo-lara-website"
-          ></ProjectCard>
+            <ProjectCard
+              title="Bankme"
+              image="/projects/bankme.png"
+              description="Simplifying Credit to companies"
+              technologies={["Angular", "NextJS", "NestJS", "RabbitMQ", "Docker", "Postgres"]}
+              githubUrl="https://github.com/bankme-tech"
+              websiteUrl="https://bankme.tech"
+            ></ProjectCard>
 
-          <ProjectCard
-            title="Andressa's Illustrations"
-            image="/projects/ilustra-1.png"
-            description="Andressa Araujo illustration portfolio"
-            technologies={["NextJS", "ReactJS", "TypeScript", "CSS"]}
-            githubUrl="https://github.com/diogozdev/next-app-andressa-ilustra"
-            websiteUrl="https://andressailustra.art"
-          ></ProjectCard>
+            <ProjectCard
+              title="Maptriz"
+              image="/projects/maptriz.png"
+              description="Smart Cities management"
+              technologies={["Angular", "SCSS", "Java", "Postgres"]}
+              websiteUrl="https://sergiogenealogia.github.io"
+            ></ProjectCard>
 
-          <ProjectCard
-            title="Sérgio Genealogy"
-            image="/projects/sergio-genealogia.png"
-            description="In memory of a great genealogist and friend of mine, Sérgio Ricardo (1961 - 2023)"
-            technologies={["HTML", "CSS", "Github Pages"]}
-            githubUrl="https://github.com/sergiogenealogia"
-            websiteUrl="https://sergiogenealogia.github.io"
-          ></ProjectCard>
-        </>
-      </Section>
+            <ProjectCard
+              title="Testing With Jest Made Simple"
+              image="/projects/jest.jpeg"
+              description={texts.jest}
+              technologies={["Jest", "NodeJS", "JavaScript"]}
+              githubUrl="https://github.com/diogozdev/Jest"
+            ></ProjectCard>
+
+            <ProjectCard
+              title="Andressa's Illustrations"
+              image="/projects/ilustra-1.png"
+              description="Andressa Araujo illustration portfolio"
+              technologies={["NextJS", "ReactJS", "TypeScript", "CSS"]}
+              githubUrl="https://github.com/diogozdev/next-app-andressa-ilustra"
+              websiteUrl="https://andressailustra.art"
+            ></ProjectCard>
+
+            <ProjectCard
+              title="Sérgio Genealogy"
+              image="/projects/sergio-genealogia.png"
+              description="In memory of Sérgio Ricardo (1961 - 2023)"
+              technologies={["HTML", "CSS", "Github Pages"]}
+            ></ProjectCard>
+          </>
+        </Section>
+      </div>
     </>
   );
 }

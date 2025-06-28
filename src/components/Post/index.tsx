@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { ReactElement } from "react";
-import { Hero } from "./Hero";
-import { Button } from "./Button";
+import { Hero } from "../Hero";
+import { Button } from "../Button";
+
+
 
 interface PostProps {
   children: ReactElement;

@@ -1,5 +1,5 @@
 import { Hero } from "@/components/Hero";
-import { PostCard } from "@/components/PostCard";
+import { PostCard } from "@/components/PostCard/index";
 import Head from "next/head";
 
 export default function Blog() {
