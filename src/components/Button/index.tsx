@@ -4,20 +4,12 @@ interface ButtonProps {
 
 export const Button = ({ children }: ButtonProps) => {
   return (
-    <>
-      <style jsx>{`
-        button {
-          margin: 1rem 0;
-          padding: 0.5rem 1rem;
-          background: var(--accent-transparent);
-          cursor:pointer;
-        }
 
-        button:hover {
-          background: var(--accent);
-        }
-      `}</style>
-      <button>{children}</button>
-    </>
+    <button
+      className="px-4 py-2 border-[1px] border-solid border-gray-400 cursor-pointer rounded hover:border-orange-400 hover:-translate-y-[5px] transition-all"
+    >
+      {children}
+    </button>
+
   );
 };

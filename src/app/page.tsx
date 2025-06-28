@@ -44,32 +44,6 @@ export default function Page() {
         <Section title="Projects & Contributions">
           <>
             <ProjectCard
-              title="Oderço"
-              image="/projects/oderco.jpg"
-              description=""
-              technologies={["React", "NestJS", "BullMQ", "Docker", "Postgres"]}
-              githubUrl="https://github.com/oderco-ti"
-              websiteUrl="https://oderco.com.br"
-            ></ProjectCard>
-
-            <ProjectCard
-              title="Bankme"
-              image="/projects/bankme.png"
-              description="Simplifying Credit to companies"
-              technologies={["Angular", "NextJS", "NestJS", "RabbitMQ", "Docker", "Postgres"]}
-              githubUrl="https://github.com/bankme-tech"
-              websiteUrl="https://bankme.tech"
-            ></ProjectCard>
-
-            <ProjectCard
-              title="Maptriz"
-              image="/projects/maptriz.png"
-              description="Smart Cities management"
-              technologies={["Angular", "SCSS", "Java", "Postgres"]}
-              websiteUrl="https://maptriz.com.br"
-            ></ProjectCard>
-
-            <ProjectCard
               title="Testing With Jest Made Simple"
               image="/projects/jest.jpeg"
               description={texts.jest}

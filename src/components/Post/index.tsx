@@ -1,7 +1,6 @@
 'use client'
 import Link from "next/link";
 import { ReactElement } from "react";
-import { Hero } from "../Hero";
 import { Button } from "../Button";
 
 
@@ -13,12 +12,11 @@ interface PostProps {
 export const Post = ({ children }: PostProps) => {
   return (
     <>
-      <Hero title="post" />
-      <Link href="../blog">
+      <Link href="..">
         <Button>back</Button>
       </Link>
-      <article>{children}</article>
-      <Link href="../blog">
+      <article className="py-8">{children}</article>
+      <Link href="..">
         <Button>back</Button>
       </Link>
     </>

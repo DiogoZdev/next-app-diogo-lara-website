@@ -7,7 +7,7 @@ import { Network } from "../Network";
 export const Hero = ({ title = "Diogo Lara" }: { title?: string }) => (
   <>
     <div className="grid content-center min-h-[70vh]">
-      <div className="py-24">
+      <div className="py-16">
         <img className="mx-auto" src="icon_color.svg" width="100" height="100" alt="Diogo Lara" />
         <h1 className="block font-semibold text-[2.5rem] mt-4 mx-auto w-fit">{title}</h1>
         <GradientHeader center text="{ fullstack developer }" />

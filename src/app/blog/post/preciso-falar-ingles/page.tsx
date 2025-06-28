@@ -1,10 +1,11 @@
+import { GradientHeader } from "@/components/GradientHeader";
 import { Post } from "@/components/Post";
 
 export default function DoINeedToSpeakEnglish() {
   return (
     <Post>
       <>
-        <h1>Preciso falar inglês para ser programador?</h1>
+        <GradientHeader text="Preciso falar inglês para ser programador?" />
         <p>
           Será que é preciso falar inglês para ser programador? Como em muitas
           questões, a polêmica resposta é: depende. As linguagens de programação
@@ -40,21 +41,21 @@ export default function DoINeedToSpeakEnglish() {
           inglês:
         </p>
         <ol>
-          <li>
+          <li className="list-decimal">
             <p>
               Aprenda os termos da sua regra de negócio em inglês e crie um
               glossário para documentar termos e segur fielmente. Com o tempo,
               esses termos serão cada vez mais naturais.
             </p>
           </li>
-          <li>
+          <li className="list-decimal">
             <p>
               Não tente usar termos rebuscados e complexos. Quanto mais simples,
               melhor, tanto para quem quer entender o código quanto a regra do
               negócio. Evite também o uso de gírias.
             </p>
           </li>
-          <li>
+          <li className="list-decimal">
             <p>
               Em inglês, a presença do sujeito é fundamental para uma frase
               estar gramaticalmente correta. Diferentemente do português, onde o
@@ -73,7 +74,7 @@ export default function DoINeedToSpeakEnglish() {
               indicar que -eu- sou um administrador.
             </p>
           </li>
-          <li>
+          <li className="list-decimal">
             <p>
               Levando em consideração a regra anterior, já reparou como o -it-
               aparece com frequência no inglês? Se não reparou, fica a dica. Um

@@ -1,10 +1,11 @@
+import { GradientHeader } from "@/components/GradientHeader";
 import { Post } from "@/components/Post";
 
 export default function ArtificialIntelligence() {
   return (
     <Post>
       <>
-        <h1>Empower people with AI, not replace &apos;em</h1>
+        <GradientHeader text="Empower people with AI, not replace &apos;em" />
         <p>
           I know there has been a lot said about this topic, but I&apos;d like to
           contribute my perspective to the discussion.

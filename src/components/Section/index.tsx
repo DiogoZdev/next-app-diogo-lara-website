@@ -10,7 +10,7 @@ interface SectionProps {
 
 export const Section = ({ title, children }: SectionProps) => {
   return (
-    <section className="grid gap-4">
+    <section className="grid gap-8">
       <div><GradientHeader text={title} /></div>
       <div>{children}</div>
     </section>
