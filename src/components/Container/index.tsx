@@ -6,5 +6,5 @@ interface Props {
 }
 
 export function Container({ children }: Props) {
-  return <div className="p-20 w-full max-w-[1100px] mx-auto border-2 boorder-red-500">{children}</div>
+  return <div className="p-4 md:p-20 w-full max-w-[1100px] mx-auto border-2 boorder-red-500">{children}</div>
 };
