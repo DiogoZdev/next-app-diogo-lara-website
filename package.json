@@ -17,6 +17,7 @@
     "autoprefixer": "10.4.14",
     "clsx": "^2.1.1",
     "eslint": "8.39.0",
+    "framer-motion": "^12.19.2",
     "next": "15.3.4",
     "pnpm": "^10.12.4",
     "postcss": "8.4.23",

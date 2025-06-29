@@ -3,6 +3,8 @@
 
 import { GithubLogo, LinkedinLogo, Phone } from "@phosphor-icons/react";
 import { ButtonLink } from "../ButtonLink";
+import { links } from "@/contents/links";
+import Link from "next/link";
 
 export default function Footer() {
   const iconSize = 30;
@@ -46,13 +48,25 @@ export default function Footer() {
           />
         </div>
 
-        <div
-          className="h-60 bg-cover bg-center"
-          style={{ backgroundImage: 'url(/br-bg.jpeg)' }}
-        >
-          <div className="w-full h-full bg-[#000b] flex justify-center items-center">
-            <span className="text-xl font-bold">With love from Brazil 💚</span>
+        <div className="grid grid-cols-2">
+          <div className="bg-gray-300 text-black flex flex-col justify-center gap-4 font-bold text-lg">
+            {links.map((link, index) => (
+              <Link
+                key={index}
+                href={link.path}
+                className="pl-16 hover:text-orange-700 transition-colors"
+              >{link.page}</Link>
+            ))}
           </div>
+          <div
+            className="h-60 bg-cover bg-center"
+            style={{ backgroundImage: 'url(/br-bg.jpeg)' }}
+          >
+            <div className="w-full h-full bg-[#000b] flex justify-center items-center p-8">
+              <span className="text-xl font-bold">With love from Brazil 💚</span>
+            </div>
+          </div>
+
         </div>
 
       </footer>

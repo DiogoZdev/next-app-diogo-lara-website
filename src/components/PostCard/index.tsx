@@ -53,7 +53,7 @@ export const PostCard = ({
         id="card"
         className="relative flex flex-col md:flex-row border-solid border-[1px] border-gray-700 mb-12 rounded-lg transition-all duration-300 group-hover:border-orange-500 group-hover:-translate-y-[5px]"
       >
-        <div className="flex flex-col items-center justify-center text-center p-4 min-w-[120px] border-b-2 md:border-b-0 md:border-r-2 border-gray-700 text-orange-400">
+        <div className="flex gap-4 md:flex-col md:gap-0 items-center md:justify-center text-center p-4 min-w-[120px] border-b-2 md:border-b-0 md:border-r-2 border-gray-700 text-orange-400">
           <CalendarDots size={32} className="text-gray-400 mb-2" />
           <span className="text-[28px] font-bold leading-none">{day}</span>
           <span className="text-[24px]">{translateMonth(month)}</span>
