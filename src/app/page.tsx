@@ -3,6 +3,7 @@ import { ProjectCard } from "@/components/ProjectCard";
 import { Section } from "@/components/Section";
 import { about, projects } from "../contents/texts/about";
 import FadeIn from "@/components/animations/FadeIn";
+import { ContactForm } from "@/components/ContactForm";
 
 export default function Page() {
   return (
@@ -34,6 +35,8 @@ export default function Page() {
             ))}
           </>
         </Section>
+
+        <ContactForm />
       </div>
     </>
   );
