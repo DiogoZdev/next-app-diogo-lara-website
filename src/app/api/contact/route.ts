@@ -1,11 +1,13 @@
-import { TRes } from '@/contracts/response';
 import { Resend } from 'resend';
 
 export async function POST(req: Request) {
   const body = await req.json();
 
   if (body.extra) {
-    return Response.json({ success: false, error: 'Bot detected' }, { status: 400 });
+    return new Response(JSON.stringify({ success: false, error: 'Bot detected' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 
   const resend = new Resend(process.env.RESEND_TOKEN!);
@@ -26,10 +28,15 @@ export async function POST(req: Request) {
       `,
     });
 
-    return Response.json({ success: true }, { status: 200 });
-
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
+    });
   } catch (err) {
 
-    return Response.json({ success: false, error: err }, { status: 400 });
+    return new Response(JSON.stringify({ success: false, error: err }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
   }
 }
