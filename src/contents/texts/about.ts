@@ -40,6 +40,14 @@ export interface IProjectData {
 
 export const projects: Array<IProjectData> = [
   {
+    title: "Numwriter npmjs lib",
+    image: "/projects/numwriter.jpg",
+    description: "Transform currency, numbers and dates into text. English, Portuguese, and Spanish.",
+    technologies: ["JavaScript"],
+    githubUrl: "https://github.com/diogozdev/numwriter-lib",
+    websiteUrl: "https://npmjs.com/package/numwriter"
+  },
+  {
     title: "Testing With Jest Made Simple",
     image: "/projects/jest.jpeg",
     description: texts.jest,
@@ -59,5 +67,12 @@ export const projects: Array<IProjectData> = [
     image: "/projects/sergio-genealogia.png",
     description: "In memory of Sérgio Ricardo (1961 - 2023)",
     technologies: ["HTML", "CSS", "Github Pages"],
+  },
+  {
+    title: "Dada LM",
+    image: "/projects/urinal.png",
+    description: "Tired of ''intelligent'' Language Models? Try Dada LM. Free, no usage limit. Ever",
+    technologies: ["JavaScript"],
+    websiteUrl: "/experiments/dada-lm"
   },
 ]
