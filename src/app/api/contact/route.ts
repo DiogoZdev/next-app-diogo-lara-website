@@ -10,6 +10,15 @@ export async function POST(req: Request) {
     });
   }
 
+  if (!body.message || body.message.length < 35) {
+    return new Response(JSON.stringify({
+      sucess: false,
+    }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   const resend = new Resend(process.env.RESEND_TOKEN!);
 
   try {
