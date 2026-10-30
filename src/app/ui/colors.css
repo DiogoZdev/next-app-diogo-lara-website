@@ -9,13 +9,22 @@
   --border-color: hsl(0, 0%, 30%);
   --border-strong: hsl(0, 0%, 42%);
 
-  --accent: hsl(340, 100%, 49%);
-  --accent-2: hsl(32, 100%, 49%);
+  /* Hues preserved (340 / 32), saturation and lightness softened. */
+  --accent: hsl(340, 70%, 52%);
+  --accent-2: hsl(32, 78%, 52%);
 
-  --accent-transparent: hsla(340, 100%, 50%, 0.2);
-  --accent-2-transparent: hsla(32, 100%, 50%, 0.2);
+  --accent-transparent: hsla(340, 70%, 52%, 0.2);
+  --accent-2-transparent: hsla(32, 78%, 52%, 0.2);
 
+  /* Bright gradient for text, icons and small accents on dark surfaces. */
   --gradient-bg: linear-gradient(90deg, var(--accent) 0%, var(--accent-2) 100%);
+
+  /* Deeper tonal gradient for large filled surfaces with white text. */
+  --gradient-surface: linear-gradient(
+    120deg,
+    hsl(340, 62%, 44%) 0%,
+    hsl(32, 70%, 38%) 100%
+  );
 
   --gradient-bg-transparent: linear-gradient(
     90deg,

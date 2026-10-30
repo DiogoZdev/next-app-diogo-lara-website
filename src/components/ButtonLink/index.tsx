@@ -19,7 +19,7 @@ export function ButtonLink(props: {
         "inline-flex min-w-40 items-center justify-center rounded-full px-5 py-2.5 text-sm font-semibold uppercase tracking-wide transition-all duration-200",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--layer-000)]",
         {
-          "gradient-bg text-white shadow-[var(--shadow-accent)] hover:-translate-y-0.5":
+          "gradient-surface text-white shadow-[var(--shadow-accent)] hover:-translate-y-0.5":
             variant === "PRIMARY",
           "border border-[var(--border-color)] bg-[var(--layer-200)] text-[var(--font-color)] hover:border-[var(--accent)] hover:text-[var(--accent)]":
             variant === "SECONDARY",

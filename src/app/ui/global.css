@@ -103,6 +103,10 @@ article h2 {
   background: var(--gradient-bg);
 }
 
+.gradient-surface {
+  background: var(--gradient-surface);
+}
+
 .gradient-text {
   background: var(--gradient-bg);
   width: fit-content;
@@ -188,21 +192,21 @@ pre {
     --card-foreground: 0 0% 85%;
     --popover: 0 0% 12.2%;
     --popover-foreground: 0 0% 85%;
-    --primary: 340 100% 49%;
+    --primary: 340 70% 52%;
     --primary-foreground: 0 0% 100%;
     --secondary: 0 0% 15.7%;
     --secondary-foreground: 0 0% 85%;
     --muted: 0 0% 15.7%;
     --muted-foreground: 0 0% 62%;
-    --accent: 340 100% 49%;
+    --accent: 340 70% 52%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
     --border: 0 0% 30%;
     --input: 0 0% 30%;
-    --ring: 340 100% 49%;
-    --chart-1: 340 100% 49%;
-    --chart-2: 32 100% 49%;
+    --ring: 340 70% 52%;
+    --chart-1: 340 70% 52%;
+    --chart-2: 32 78% 52%;
     --chart-3: 0 0% 62%;
     --chart-4: 0 0% 42%;
     --chart-5: 0 0% 30%;

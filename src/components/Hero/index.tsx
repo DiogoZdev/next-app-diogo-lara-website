@@ -54,7 +54,7 @@ export const Hero = ({ title = "Diogo Lara" }: { title?: string }) => (
       <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
         <a
           href="#contact"
-          className="group flex items-center gap-2 rounded-full gradient-bg px-6 py-3 text-sm font-semibold text-white shadow-[var(--shadow-accent)] transition-transform duration-200 hover:-translate-y-0.5"
+          className="group flex items-center gap-2 rounded-full gradient-surface px-6 py-3 text-sm font-semibold text-white shadow-[var(--shadow-accent)] transition-transform duration-200 hover:-translate-y-0.5"
         >
           Let&apos;s talk
           <ArrowDownIcon

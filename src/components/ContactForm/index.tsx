@@ -54,15 +54,12 @@ export function ContactForm() {
       <Toaster position="top-right" richColors />
 
       <div className="mb-10 flex items-center gap-5">
-        <div className="flex items-center gap-3">
-          <span className="gradient-bg h-6 w-1 shrink-0 rounded-full" />
-          <GradientHeader text="Get in touch" />
-        </div>
+        <GradientHeader text="Get in touch" />
         <span className="hairline min-w-8 flex-1" aria-hidden />
       </div>
 
       <div className="surface grid overflow-hidden rounded-3xl lg:grid-cols-[1.05fr_1fr]">
-        <div className="gradient-bg relative overflow-hidden p-8 text-white md:p-12">
+        <div className="gradient-surface relative overflow-hidden p-8 text-white md:p-12">
           <div
             aria-hidden
             className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full bg-white/15 blur-2xl"

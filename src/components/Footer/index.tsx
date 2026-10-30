@@ -21,7 +21,7 @@ export default function Footer() {
             href="https://github.com/diogozdev"
             target="_blank"
             rel="noreferrer"
-            className="gradient-bg group relative overflow-hidden rounded-2xl p-7 text-white transition-transform duration-300 hover:-translate-y-1"
+            className="gradient-surface group relative overflow-hidden rounded-2xl p-7 text-white transition-transform duration-300 hover:-translate-y-1"
           >
             <div
               aria-hidden
