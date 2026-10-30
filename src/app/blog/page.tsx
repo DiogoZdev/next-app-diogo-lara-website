@@ -4,12 +4,12 @@ import { Section } from "@/components/Section";
 import { postsData } from "./posts";
 
 export const metadata = {
-  title: 'Diogo Lara - Blog'
+  title: 'Blog'
 }
 
 export default function Blog() {
   return (
-    <Section title="Blog">
+    <Section title="Blog" className="pt-16 md:pt-24">
       <>
         {postsData.map((post) => (
           <FadeIn key={post.url}>

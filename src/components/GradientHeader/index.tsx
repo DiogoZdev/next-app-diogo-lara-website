@@ -1,9 +1,23 @@
+import { cn } from "@/lib/utils";
+
 export function GradientHeader({
   text,
   center = false,
-}:{
-  text: string
+  className,
+}: {
+  text: string;
   center?: boolean;
+  className?: string;
 }) {
-  return <h2 className={`block font-bold text-[1.5rem] gradient-text ${center ? 'mx-auto' : ''}`}>{text}</h2>
+  return (
+    <h2
+      className={cn(
+        "gradient-text block font-display text-[1.5rem] font-bold md:text-[1.75rem]",
+        center && "mx-auto",
+        className
+      )}
+    >
+      {text}
+    </h2>
+  );
 }

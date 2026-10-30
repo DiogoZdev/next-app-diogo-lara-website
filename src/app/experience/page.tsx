@@ -1,20 +1,15 @@
 import { ProjectCard } from "@/components/ProjectCard";
 import { Section } from "@/components/Section";
-import Head from "next/head";
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
- title: 'Diogo Lara - Experience',
+ title: 'Experience',
 }
 
 export default function Experience() {
   return (
     <>
-      <Head>
-        <title>Experience - Diogo Lara</title>
-      </Head>
-
-      <Section title="Experience">
+      <Section title="Experience" className="pt-16 md:pt-24">
         <>
           <ProjectCard
             title="Oderço (2024 -> today)"

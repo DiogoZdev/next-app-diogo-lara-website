@@ -1,17 +1,17 @@
+import FadeIn from "@/components/animations/FadeIn";
+import { ContactForm } from "@/components/ContactForm";
 import { Hero } from "@/components/Hero";
 import { ProjectCard } from "@/components/ProjectCard";
 import { Section } from "@/components/Section";
 import { about, projects } from "../contents/texts/about";
-import FadeIn from "@/components/animations/FadeIn";
-import { ContactForm } from "@/components/ContactForm";
 
 export default function Page() {
   return (
     <>
       <Hero />
 
-      <div className="grid gap-8">
-        <Section title="A little beyond the code">
+      <div className="grid gap-24 md:gap-32">
+        <Section id="about" title="A little beyond the code">
           <>
             {about.map((paragraph, index) => (
               <p key={index}>{paragraph}</p>
@@ -19,7 +19,7 @@ export default function Page() {
           </>
         </Section>
 
-        <Section title="Projects & Contributions">
+        <Section id="projects" title="Projects & Contributions">
           <>
             {projects.map((project, index) => (
               <FadeIn key={index}>

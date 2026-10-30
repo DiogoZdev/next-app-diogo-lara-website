@@ -1,32 +1,75 @@
-@import url("https://fonts.googleapis.com/css2?family=Sanchez&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Sanchez&family=Space+Grotesk:wght@400;500;600;700&display=swap");
 @import "./colors.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
-  text-decoration: none;
-  color: unset;
   margin: 0;
   padding: 0;
-  border: 0;
 }
 
 :root {
   font-size: 16px;
   font-family: "Sanchez", monospace, sans-serif;
+  --font-display: "Space Grotesk", "Sanchez", sans-serif;
 }
 
-html, body {
-  width: 100vw;
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  width: 100%;
   overflow-x: hidden;
 }
 
 body {
+  min-height: 100vh;
   background-color: var(--layer-000);
   color: var(--font-color);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Soft ambient light behind the whole page, using the original accents. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      560px circle at 12% -8%,
+      var(--accent-transparent),
+      transparent 62%
+    ),
+    radial-gradient(
+      700px circle at 92% 4%,
+      var(--accent-2-transparent),
+      transparent 58%
+    );
+  opacity: 0.55;
+}
+
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+::selection {
+  background: var(--accent);
+  color: #fff;
 }
 
 ul {
@@ -37,31 +80,35 @@ ol {
   padding-left: 1rem;
 }
 
-.stripe {
-  height: 1rem;
-}
-
-.gradient-bg {
-  background: linear-gradient(to right, var(--accent), var(--accent-2));
-}
-
-.gradient-text {
-  background: linear-gradient(to right, var(--accent), var(--accent-2));
-  width: fit-content;
-  color: transparent;
-  background-clip: text;
-}
-
 p {
   font-size: 16px;
   max-width: 70ch;
-  text-indent: 2ch;
   margin-bottom: 1rem;
   line-height: 1.8;
 }
 
 article h1 {
   margin-bottom: 2rem;
+}
+
+article h2 {
+  margin-bottom: 1.75rem;
+}
+
+.stripe {
+  height: 3px;
+}
+
+.gradient-bg {
+  background: var(--gradient-bg);
+}
+
+.gradient-text {
+  background: var(--gradient-bg);
+  width: fit-content;
+  color: transparent;
+  background-clip: text;
+  -webkit-background-clip: text;
 }
 
 .accent {
@@ -80,10 +127,46 @@ pre {
   border-radius: 8px;
   max-width: 80ch;
   margin: 1rem 0;
+  overflow-x: auto;
+}
+
+/* Shared surfaces */
+.nav-glass {
+  background: rgba(25, 25, 25, 0.78);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.surface {
+  background: var(--layer-100);
+  border: 1px solid var(--border-color);
+}
+
+.surface-hover {
+  transition:
+    transform 300ms ease,
+    border-color 300ms ease,
+    box-shadow 300ms ease,
+    background-color 300ms ease;
+}
+
+.surface-hover:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-card);
+}
+
+.hairline {
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    var(--border-color) 0%,
+    transparent 100%
+  );
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -93,73 +176,36 @@ pre {
 ::-webkit-scrollbar-thumb {
   background: var(--accent);
   border-radius: 8px;
+  border: 2px solid var(--layer-000);
 }
-
-
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-  }
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-  }
-}
-
-
-
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
+    /* shadcn-compatible tokens mapped onto the project palette */
+    --background: 0 0% 9.8%;
+    --foreground: 0 0% 85%;
+    --card: 0 0% 12.2%;
+    --card-foreground: 0 0% 85%;
+    --popover: 0 0% 12.2%;
+    --popover-foreground: 0 0% 85%;
+    --primary: 340 100% 49%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 0 0% 15.7%;
+    --secondary-foreground: 0 0% 85%;
+    --muted: 0 0% 15.7%;
+    --muted-foreground: 0 0% 62%;
+    --accent: 340 100% 49%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 30%;
+    --input: 0 0% 30%;
+    --ring: 340 100% 49%;
+    --chart-1: 340 100% 49%;
+    --chart-2: 32 100% 49%;
+    --chart-3: 0 0% 62%;
+    --chart-4: 0 0% 42%;
+    --chart-5: 0 0% 30%;
+    --radius: 0.75rem;
   }
 }

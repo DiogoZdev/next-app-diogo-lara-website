@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { ArrowRight, CalendarDots } from "@phosphor-icons/react";
+import { ArrowRightIcon, CalendarDotsIcon } from "@phosphor-icons/react";
 import Link from "next/link";
 
 interface PostCardProps {
@@ -19,7 +19,6 @@ export const PostCard = ({
   preview,
   url,
 }: PostCardProps) => {
-  const iconsSize = 28;
   const dateSplit = date.includes("/") ? date.split("/") : date.split("-");
   const dateOrdered =
     Number.parseInt(dateSplit[0], 10) > Number.parseInt(dateSplit[2], 10)
@@ -29,7 +28,7 @@ export const PostCard = ({
   const [day, month, year] = dateOrdered;
 
   function translateMonth(month: string) {
-     const names: { [key: string]: string } = {
+    const names: { [key: string]: string } = {
       "01": "Jan",
       "02": "Feb",
       "03": "Mar",
@@ -48,31 +47,45 @@ export const PostCard = ({
   }
 
   return (
-    <Link href={url} className="block group">
-      <div
-        id="card"
-        className="relative flex flex-col md:flex-row border-solid border-[1px] border-gray-700 mb-12 rounded-lg transition-all duration-300 group-hover:border-orange-500 group-hover:-translate-y-[5px]"
-      >
-        <div className="flex gap-4 md:flex-col md:gap-0 items-center md:justify-center text-center p-4 min-w-[120px] border-b-2 md:border-b-0 md:border-r-2 border-gray-700 text-orange-400">
-          <CalendarDots size={32} className="text-gray-400 mb-2" />
-          <span className="text-[28px] font-bold leading-none">{day}</span>
-          <span className="text-[24px]">{translateMonth(month)}</span>
-          <span className="text-[16px] text-gray-400">{year}</span>
+    <Link href={url} className="group mb-6 block">
+      <article className="surface surface-hover flex flex-col overflow-hidden rounded-2xl md:flex-row group-hover:border-[var(--accent)]">
+        <div className="flex items-center gap-3 border-b border-[var(--border-color)] bg-[var(--layer-200)] p-5 md:w-[150px] md:flex-col md:justify-center md:gap-1 md:border-b-0 md:border-r">
+          <CalendarDotsIcon
+            size={22}
+            className="text-[var(--font-muted)] md:mb-2"
+          />
+          <span className="gradient-text font-display text-3xl font-bold leading-none">
+            {day}
+          </span>
+          <span className="text-sm text-[var(--font-color)]">
+            {translateMonth(month)}
+          </span>
+          <span className="text-xs text-[var(--font-muted)]">{year}</span>
         </div>
 
-        {/* Post Info Section */}
-        <div className="w-full p-4 flex flex-col gap-2">
-          <h2 className="text-xl font-bold">{title}</h2>
+        <div className="flex w-full flex-col gap-3 p-6">
+          <h2 className="font-display text-xl font-bold leading-tight transition-colors group-hover:text-[var(--accent)]">
+            {title}
+          </h2>
 
-          <p className="text-gray-300">{preview}</p>
+          <p className="mb-0 text-sm leading-relaxed text-[var(--font-muted)]">
+            {preview}
+          </p>
 
-          <div className="flex justify-between items-center mt-4">
-            <span className="p-2 bg-[#333] rounded text-sm cursor-default">{language}</span>
+          <div className="mt-2 flex items-center justify-between">
+            <span className="rounded-full border border-[var(--border-color)] bg-[var(--layer-200)] px-3 py-1 text-xs text-[var(--font-muted)]">
+              {language}
+            </span>
 
-            <ArrowRight size={iconsSize} className="text-gray-500 transition-transform duration-300 group-hover:text-white group-hover:translate-x-1" />
+            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border-color)] text-[var(--font-muted)] transition-all duration-300 group-hover:border-[var(--accent)] group-hover:text-[var(--accent)]">
+              <ArrowRightIcon
+                size={18}
+                className="transition-transform duration-300 group-hover:translate-x-0.5"
+              />
+            </span>
           </div>
         </div>
-      </div>
+      </article>
     </Link>
   );
 };

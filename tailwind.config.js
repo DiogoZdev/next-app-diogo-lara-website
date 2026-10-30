@@ -8,6 +8,10 @@ module.exports = {
   ],
   theme: {
   	extend: {
+  		fontFamily: {
+  			display: ['var(--font-display)', 'sans-serif'],
+  			sans: ['Sanchez', 'monospace', 'sans-serif']
+  		},
   		backgroundImage: {
   			'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
   			'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))'
@@ -18,6 +22,17 @@ module.exports = {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+  			layer: {
+  				'0': 'var(--layer-000)',
+  				'1': 'var(--layer-100)',
+  				'2': 'var(--layer-200)',
+  				'3': 'var(--layer-300)'
+  			},
+  			ink: {
+  				DEFAULT: 'var(--font-color)',
+  				muted: 'var(--font-muted)'
+  			},
+  			line: 'var(--border-color)',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {

@@ -2,9 +2,12 @@
   --layer-000: #191919;
   --layer-100: #1f1f1f;
   --layer-200: #282828;
+  --layer-300: #333333;
 
   --font-color: hsl(0, 0%, 85%);
+  --font-muted: hsl(0, 0%, 62%);
   --border-color: hsl(0, 0%, 30%);
+  --border-strong: hsl(0, 0%, 42%);
 
   --accent: hsl(340, 100%, 49%);
   --accent-2: hsl(32, 100%, 49%);
@@ -19,4 +22,7 @@
     var(--accent-transparent) 0%,
     var(--accent-2-transparent) 100%
   );
+
+  --shadow-card: 0 24px 60px -32px rgba(0, 0, 0, 0.75);
+  --shadow-accent: 0 18px 50px -22px var(--accent-transparent);
 }

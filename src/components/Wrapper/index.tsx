@@ -1,4 +1,3 @@
-'use client'
 import { ReactNode } from "react";
 
 interface Props {
@@ -6,5 +5,9 @@ interface Props {
 }
 
 export function Wrapper({ children }: Props) {
-  return <div className="p-4 md:p-20 w-full max-w-[1100px] mx-auto border-2 boorder-red-500">{children}</div>
-};
+  return (
+    <div className="mx-auto w-full max-w-[1120px] px-5 md:px-8">
+      {children}
+    </div>
+  );
+}

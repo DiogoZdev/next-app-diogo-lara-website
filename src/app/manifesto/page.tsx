@@ -2,19 +2,23 @@ import FadeIn from "@/components/animations/FadeIn";
 import { Section } from "@/components/Section";
 
 function Theme(p: {text: string}) {
-  return <span className="font-bold text-lg text-orange-500">{p.text}</span>
+  return (
+    <span className="mb-2 flex items-center gap-3 font-display text-lg font-bold text-[var(--accent)]">
+      {p.text}
+    </span>
+  )
 }
 
 function Content(p: {text: string}) {
-  return <span className="block pb-4">{p.text}</span>
+  return <span className="block pb-4 text-[var(--font-muted)]">{p.text}</span>
 }
 
 export const metadata = {
-  title: 'Diogo Lara - Manifesto'
+  title: 'Manifesto'
 }
 
 export default function Values() {
-  return <Section title="ZDev - Manifesto">
+  return <Section title="ZDev — Manifesto" className="pt-16 md:pt-24">
     <>
       <FadeIn>
         <>

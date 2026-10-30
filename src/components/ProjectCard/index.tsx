@@ -2,7 +2,6 @@
 "use client";
 
 import { GithubLogo, Globe } from "@phosphor-icons/react";
-import "./style.scss"
 import Link from "next/link";
 import { useState } from "react";
 
@@ -25,79 +24,99 @@ export const ProjectCard = ({
   websiteUrl,
   alt,
 }: ProjectProps) => {
-  const iconsSize = 28;
+  const iconsSize = 20;
   const multipleParagraphs = description.split("//").length > 1;
+  const hasDescription = description.trim().length > 0;
 
   const [isOpen, setIsOpen] = useState(false);
 
   function handleSetIsOpen() {
-    setIsOpen(!isOpen);
+    setIsOpen((open) => !open);
   }
 
   return (
-    <>
-      <div id="card" className="relative flex flex-col md:flex-row md:even:flex-row-reverse border-solid border-[1px] border-gray-700 mb-12 rounded-lg">
-        <div className="min-w-[220px]">
-          <img
-            src={image}
-            alt={alt ?? "project image"}
-            className="rounded-lg p-0 object-cover w-[220px] h-[220px]"
-          />
-        </div>
+    <article className="surface surface-hover group mb-8 overflow-hidden rounded-2xl md:flex">
+      <div className="relative shrink-0 overflow-hidden bg-[var(--layer-200)] md:w-[280px]">
+        <img
+          src={image}
+          alt={alt ?? `${title} project preview`}
+          className="h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105 md:h-full md:min-h-[260px]"
+        />
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-t from-[rgba(25,25,25,0.75)] via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-[rgba(31,31,31,0.6)]"
+        />
+      </div>
 
-        <div className="w-full p-4 flex flex-col gap-2">
-          <h2 className="text-xl font-bold">{title}</h2>
+      <div className="flex w-full flex-col gap-3 p-6 md:p-8">
+        <div className="flex items-start justify-between gap-4">
+          <h2 className="font-display text-xl font-bold leading-tight md:text-2xl">
+            {title}
+          </h2>
 
-          {multipleParagraphs && (
-            <button
-              id="read-more"
-              className="absolute -top-2 ml-auto bg-orange-700 w-fit px-4 py-2 rounded font-bold"
-              onClick={handleSetIsOpen}
-            >
-              read {!isOpen ? "more" : "less"}
-            </button>
-          )}
-
-          {(!isOpen && multipleParagraphs) || !multipleParagraphs ? (
-            <p>{description.split("//")[0]}</p>
-          ) : null}
-
-          {isOpen &&
-            multipleParagraphs &&
-            description
-              .split("//")
-              .map((paragraph) => (
-                <p key={paragraph.slice(0, 10)}>{paragraph}</p>
-              ))}
-
-          <ul className="flex flex-wrap gap-4">
-            {technologies.map((tech) => (
-              <li
-                key={tech}
-                className="p-2 bg-[#333] rounded hover:text-black hover:bg-orange-300 cursor-default"
-              >{tech}</li>
-            ))}
-          </ul>
-          <div className="flex gap-4 text-white mt-4">
-           {githubUrl && <Link
-              className="text-[var(--accent-2)]"
-              href={githubUrl ?? "#"}
-              target="_blank"
-            >
-              <GithubLogo size={iconsSize} />
-            </Link>}
+          <div className="flex shrink-0 gap-2">
+            {githubUrl && (
+              <Link
+                href={githubUrl}
+                target="_blank"
+                aria-label={`${title} on GitHub`}
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border-color)] text-[var(--font-muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+              >
+                <GithubLogo size={iconsSize} />
+              </Link>
+            )}
             {websiteUrl && (
               <Link
-                className="text-[var(--accent-2)]"
                 href={websiteUrl}
                 target="_blank"
+                aria-label={`${title} website`}
+                className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border-color)] text-[var(--font-muted)] transition-colors hover:border-[var(--accent-2)] hover:text-[var(--accent-2)]"
               >
                 <Globe size={iconsSize} />
               </Link>
             )}
           </div>
         </div>
+
+        {hasDescription && (
+          <div className="text-sm leading-relaxed text-[var(--font-muted)]">
+            {(!isOpen && multipleParagraphs) || !multipleParagraphs ? (
+              <p className="mb-0">{description.split("//")[0]}</p>
+            ) : null}
+
+            {isOpen &&
+              multipleParagraphs &&
+              description
+                .split("//")
+                .map((paragraph) => (
+                  <p key={paragraph.slice(0, 20)} className="mb-3 last:mb-0">
+                    {paragraph}
+                  </p>
+                ))}
+          </div>
+        )}
+
+        {multipleParagraphs && (
+          <button
+            type="button"
+            onClick={handleSetIsOpen}
+            className="w-fit text-sm font-semibold text-[var(--accent)] underline decoration-[var(--accent-transparent)] decoration-2 underline-offset-4 transition-colors hover:text-[var(--accent-2)]"
+          >
+            read {isOpen ? "less" : "more"}
+          </button>
+        )}
+
+        <ul className="mt-auto flex flex-wrap gap-2 pt-3">
+          {technologies.map((tech) => (
+            <li
+              key={tech}
+              className="rounded-full border border-[var(--border-color)] bg-[var(--layer-200)] px-3 py-1 text-xs text-[var(--font-muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+            >
+              {tech}
+            </li>
+          ))}
+        </ul>
       </div>
-    </>
+    </article>
   );
 };
