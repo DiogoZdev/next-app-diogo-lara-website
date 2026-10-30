@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckCircleIcon, PaperPlaneRightIcon } from "@phosphor-icons/react";
+import { CheckCircle, PaperPlaneRight } from "@phosphor-icons/react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast, Toaster } from "sonner";
@@ -83,7 +83,7 @@ export function ContactForm() {
             <ul className="mt-8 grid gap-3">
               {perks.map((perk) => (
                 <li key={perk} className="flex items-center gap-3 text-sm">
-                  <CheckCircleIcon size={20} weight="fill" className="shrink-0" />
+                  <CheckCircle size={20} weight="fill" className="shrink-0" />
                   {perk}
                 </li>
               ))}
@@ -122,7 +122,7 @@ export function ContactForm() {
 
             <Button type="submit" disabled={isLoading} className="w-full justify-center">
               {isLoading ? "SENDING..." : "SEND"}
-              <PaperPlaneRightIcon size={20} />
+              <PaperPlaneRight size={20} />
             </Button>
           </form>
         </div>

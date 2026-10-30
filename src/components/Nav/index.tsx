@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ListIcon, XIcon } from "@phosphor-icons/react";
+import { List, X } from "@phosphor-icons/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -69,7 +69,7 @@ export const Nav = ({ pages }: Props) => {
             onClick={() => setIsOpen((open) => !open)}
             className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border-color)] text-[var(--font-color)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)] md:hidden"
           >
-            {isOpen ? <XIcon size={22} /> : <ListIcon size={22} />}
+            {isOpen ? <X size={22} /> : <List size={22} />}
           </button>
         </nav>
 

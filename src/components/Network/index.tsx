@@ -1,32 +1,32 @@
 "use client";
 
 import {
-  EnvelopeOpenIcon,
-  GithubLogoIcon,
-  LinkedinLogoIcon,
-  PhoneIcon,
+  EnvelopeOpen,
+  GithubLogo,
+  LinkedinLogo,
+  Phone,
 } from "@phosphor-icons/react";
 
 const links = [
   {
     label: "Linkedin",
     href: "https://linkedin.com/in/diogo-lara",
-    icon: LinkedinLogoIcon,
+    icon: LinkedinLogo,
   },
   {
     label: "Github",
     href: "https://github.com/diogozdev",
-    icon: GithubLogoIcon,
+    icon: GithubLogo,
   },
   {
     label: "Email",
     href: "mailto:diogo.lara.dev@gmail.com",
-    icon: EnvelopeOpenIcon,
+    icon: EnvelopeOpen,
   },
   {
     label: "Phone",
     href: "https://wa.me/5543984449774",
-    icon: PhoneIcon,
+    icon: Phone,
   },
 ];
 
@@ -35,7 +35,7 @@ export function Network() {
 
   return (
     <ul className="flex w-fit items-center gap-1 rounded-full border border-[var(--border-color)] bg-[var(--layer-100)] p-1.5">
-      {links.map(({ label, href, icon: Icon }) => (
+      {links.map(({ label, href, icon: Glyph }) => (
         <li key={label}>
           <a
             href={href}
@@ -44,7 +44,7 @@ export function Network() {
             aria-label={label}
             className="flex h-10 w-10 items-center justify-center rounded-full text-[var(--font-muted)] transition-colors duration-200 hover:bg-[var(--accent-transparent)] hover:text-[var(--accent)]"
           >
-            <Icon size={iconSize} />
+            <Glyph size={iconSize} />
           </a>
         </li>
       ))}

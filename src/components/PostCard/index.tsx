@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { ArrowRightIcon, CalendarDotsIcon } from "@phosphor-icons/react";
+import { ArrowRight, CalendarDots } from "@phosphor-icons/react";
 import Link from "next/link";
 
 interface PostCardProps {
@@ -50,7 +50,7 @@ export const PostCard = ({
     <Link href={url} className="group mb-6 block">
       <article className="surface surface-hover flex flex-col overflow-hidden rounded-2xl md:flex-row group-hover:border-[var(--accent)]">
         <div className="flex items-center gap-3 border-b border-[var(--border-color)] bg-[var(--layer-200)] p-5 md:w-[150px] md:flex-col md:justify-center md:gap-1 md:border-b-0 md:border-r">
-          <CalendarDotsIcon
+          <CalendarDots
             size={22}
             className="text-[var(--font-muted)] md:mb-2"
           />
@@ -78,7 +78,7 @@ export const PostCard = ({
             </span>
 
             <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border-color)] text-[var(--font-muted)] transition-all duration-300 group-hover:border-[var(--accent)] group-hover:text-[var(--accent)]">
-              <ArrowRightIcon
+              <ArrowRight
                 size={18}
                 className="transition-transform duration-300 group-hover:translate-x-0.5"
               />

@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
-import { ArrowDownIcon } from "@phosphor-icons/react";
+import { ArrowDown } from "@phosphor-icons/react";
 import { GradientHeader } from "../GradientHeader";
 import { Network } from "../Network";
 
@@ -57,7 +57,7 @@ export const Hero = ({ title = "Diogo Lara" }: { title?: string }) => (
           className="group flex items-center gap-2 rounded-full gradient-surface px-6 py-3 text-sm font-semibold text-white shadow-[var(--shadow-accent)] transition-transform duration-200 hover:-translate-y-0.5"
         >
           Let&apos;s talk
-          <ArrowDownIcon
+          <ArrowDown
             size={18}
             className="transition-transform duration-200 group-hover:translate-x-1"
           />
@@ -67,7 +67,7 @@ export const Hero = ({ title = "Diogo Lara" }: { title?: string }) => (
           className="group flex items-center gap-2 rounded-full border border-[var(--border-color)] px-6 py-3 text-sm font-semibold text-[var(--font-color)] transition-colors duration-200 hover:border-[var(--accent)] hover:text-[var(--accent)]"
         >
           View projects
-          <ArrowDownIcon
+          <ArrowDown
             size={18}
             className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:translate-y-0.5"
           />

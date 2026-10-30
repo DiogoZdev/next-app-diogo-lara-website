@@ -2,11 +2,11 @@
 
 import { links } from "@/contents/links";
 import {
-  ArrowUpRightIcon,
-  GithubLogoIcon,
-  HeartIcon,
-  LinkedinLogoIcon,
-  PhoneIcon,
+  ArrowUpRight,
+  GithubLogo,
+  Heart,
+  LinkedinLogo,
+  Phone,
 } from "@phosphor-icons/react";
 import Link from "next/link";
 
@@ -29,9 +29,9 @@ export default function Footer() {
             />
             <div className="relative flex items-start justify-between">
               <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/15">
-                <GithubLogoIcon size={iconSize} aria-label="Github" />
+                <GithubLogo size={iconSize} aria-label="Github" />
               </span>
-              <ArrowUpRightIcon
+              <ArrowUpRight
                 size={22}
                 className="opacity-70 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
               />
@@ -50,9 +50,9 @@ export default function Footer() {
           >
             <div className="flex items-start justify-between">
               <span className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--border-color)] text-[var(--accent)]">
-                <PhoneIcon size={iconSize} aria-label="Phone" />
+                <Phone size={iconSize} aria-label="Phone" />
               </span>
-              <ArrowUpRightIcon
+              <ArrowUpRight
                 size={22}
                 className="text-[var(--font-muted)] transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[var(--accent)]"
               />
@@ -73,9 +73,9 @@ export default function Footer() {
           >
             <div className="flex items-start justify-between">
               <span className="flex h-12 w-12 items-center justify-center rounded-full border border-[var(--border-color)] text-[var(--accent-2)]">
-                <LinkedinLogoIcon size={iconSize} aria-label="LinkedIn" />
+                <LinkedinLogo size={iconSize} aria-label="LinkedIn" />
               </span>
-              <ArrowUpRightIcon
+              <ArrowUpRight
                 size={22}
                 className="text-[var(--font-muted)] transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-[var(--accent-2)]"
               />
@@ -100,7 +100,7 @@ export default function Footer() {
             </nav>
             <p className="mt-6 flex items-center gap-2 text-sm text-[var(--font-muted)]">
               With love from Brazil
-              <HeartIcon size={14} weight="fill" className="text-green-500" />
+              <Heart size={14} weight="fill" className="text-green-500" />
             </p>
           </div>
         </div>
