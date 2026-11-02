@@ -20,4 +20,8 @@ export const links: Array<IPage> = [
     page: 'Manifesto',
     path: '/manifesto',
   },
+  {
+    page: 'Mascot',
+    path: '/mascot',
+  },
 ]
