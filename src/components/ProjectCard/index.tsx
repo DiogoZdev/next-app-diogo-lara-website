@@ -42,10 +42,6 @@ export const ProjectCard = ({
           alt={alt ?? `${title} project preview`}
           className="h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105 md:h-full md:min-h-[260px]"
         />
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-gradient-to-t from-[rgba(25,25,25,0.75)] via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:to-[rgba(31,31,31,0.6)]"
-        />
       </div>
 
       <div className="flex w-full flex-col gap-3 p-6 md:p-8">

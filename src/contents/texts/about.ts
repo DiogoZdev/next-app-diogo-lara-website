@@ -40,6 +40,21 @@ export interface IProjectData {
 
 export const projects: Array<IProjectData> = [
   {
+    title: "NumWriter",
+    image: "/projects/numwriter.png",
+    description: "A number-to-word converter library for JavaScript and TypeScript.",
+    technologies: ["JavaScript", "TypeScript"],
+    githubUrl: "https://github.com/diogozdev/numwriter-lib",
+    websiteUrl: "https://www.npmjs.com/package/numwriter"
+  },
+  {
+    title: "Compared Language Bible",
+    image: "/projects/bible.png",
+    description: "A compared language bible. Includes Latin, Greek, Hebrew, Italian, Spanish, English, Portuguese and other languages.",
+    technologies: ["Angular", "TypeScript", "SCSS"],
+    websiteUrl: "https://bible.diogolara.dev"
+  },
+  {
     title: "Testing With Jest Made Simple",
     image: "/projects/jest.jpeg",
     description: texts.jest,

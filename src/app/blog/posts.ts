@@ -8,6 +8,13 @@ export interface IPost {
 
 export const postsData: Array<IPost> = [
   {
+    date: "2026/10/30",
+    language: "English",
+    preview: "",
+    title: "From autocompletion to agent assistance",
+    url: "blog/post/agent-assisted-programming",
+  },
+  {
     date: "2023/06/10",
     language: "English",
     preview: "A new era has truly started. Do humans have place in it?",

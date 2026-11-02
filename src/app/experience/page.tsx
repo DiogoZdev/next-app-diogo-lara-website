@@ -30,7 +30,7 @@ export default function Experience() {
           ></ProjectCard>
 
           <ProjectCard
-            title="Maptriz - (2021)"
+            title="Maptriz (2021)"
             image="/projects/maptriz.png"
             description="Smart Cities management"
             technologies={["Angular", "SCSS", "Java", "Postgres", "GitLab"]}
