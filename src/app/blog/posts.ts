@@ -9,8 +9,15 @@ export interface IPost {
 export const postsData: Array<IPost> = [
   {
     date: "2026/10/30",
+    language: "Português",
+    preview: "Mordi a língua. Às vezes vemos coisas darem certo, às vezes falharem, às vezes nos empolgamos e às vezes deixamos passar.",
+    title: "Do autocompletar à programação assistida por agentes",
+    url: "blog/post/agent-assisted-programming-ptbr",
+  },
+  {
+    date: "2026/10/30",
     language: "English",
-    preview: "",
+    preview: "I bit my tongue. Sometimes we see things succeed, sometimes fail, sometimes we hype, and sometimes we let go.",
     title: "From autocompletion to agent assistance",
     url: "blog/post/agent-assisted-programming",
   },
@@ -20,6 +27,13 @@ export const postsData: Array<IPost> = [
     preview: "A new era has truly started. Do humans have place in it?",
     title: "Empower people with AI",
     url: "blog/post/artificial-intelligence",
+  },
+  {
+    date: "2023/04/28",
+    language: "Português",
+    preview: "Devo aprender React ou Angular? Como ter resultados mais rápido? Por onde começar com tantas possibilidades semelhantes?",
+    title: "Escolhendo tecnologias para se usar",
+    url: "blog/post/choosing-technologies-ptbr",
   },
   {
     date: "2023/04/28",
