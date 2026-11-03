@@ -1,6 +1,7 @@
 "use client";
 
 import { links } from "@/contents/links";
+import { useLanguage } from "@/lib/i18n";
 import {
   ArrowUpRight,
   GithubLogo,
@@ -13,6 +14,8 @@ import Link from "next/link";
 const iconSize = 26;
 
 export default function Footer() {
+  const { t } = useLanguage();
+
   return (
     <footer className="mt-24 border-t border-[var(--border-color)]">
       <div className="mx-auto w-full max-w-[1120px] px-5 py-16 md:px-8">
@@ -90,25 +93,28 @@ export default function Footer() {
             <nav className="grid grid-cols-2 gap-x-4 gap-y-2">
               {links.map((link) => (
                 <Link
-                  key={link.page}
+                  key={link.path}
                   href={link.path}
                   className="w-fit text-sm text-[var(--font-muted)] transition-colors hover:text-[var(--accent)]"
                 >
-                  {link.page}
+                  {t(link.page)}
                 </Link>
               ))}
             </nav>
             <p className="mt-6 flex items-center gap-2 text-sm text-[var(--font-muted)]">
-              With love from Brazil
+              {t({ en: "With love from Brazil", pt: "Feito com amor no Brasil" })}
               <Heart size={14} weight="fill" className="text-green-500" />
             </p>
           </div>
         </div>
 
         <div className="mt-12 flex flex-col gap-3 border-t border-[var(--border-color)] pt-6 text-sm text-[var(--font-muted)] md:flex-row md:items-center md:justify-between">
-          <span>© {new Date().getFullYear()} Diogo Lara. All rights reserved.</span>
+          <span>
+            © {new Date().getFullYear()} Diogo Lara.{" "}
+            {t({ en: "All rights reserved.", pt: "Todos os direitos reservados." })}
+          </span>
           <span className="font-display tracking-wide">
-            Built with Next.js
+            {t({ en: "Built with Next.js", pt: "Feito com Next.js" })}
           </span>
         </div>
       </div>

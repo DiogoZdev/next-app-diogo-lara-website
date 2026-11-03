@@ -2,6 +2,7 @@ import Footer from "@/components/Footer";
 import { Nav } from "@/components/Nav";
 import { Wrapper } from "@/components/Wrapper";
 import { links } from "@/contents/links";
+import { LanguageProvider } from "@/lib/i18n";
 import type { Metadata } from "next";
 import { ReactNode } from "react";
 import "./ui/global.css";
@@ -22,11 +23,13 @@ export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <Nav pages={links} />
-        <Wrapper>
-          <main>{children}</main>
-        </Wrapper>
-        <Footer />
+        <LanguageProvider>
+          <Nav pages={links} />
+          <Wrapper>
+            <main>{children}</main>
+          </Wrapper>
+          <Footer />
+        </LanguageProvider>
       </body>
     </html>
   );

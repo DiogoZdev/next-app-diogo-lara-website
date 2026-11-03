@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import { useLanguage, type LocalizedText } from "@/lib/i18n";
 import { GithubLogo, Globe } from "@phosphor-icons/react";
 import Link from "next/link";
 import { useState } from "react";
@@ -8,7 +9,7 @@ import { useState } from "react";
 interface ProjectProps {
   title: string;
   image: string;
-  description: string;
+  description: LocalizedText;
   technologies: string[];
   githubUrl?: string;
   websiteUrl?: string;
@@ -24,9 +25,11 @@ export const ProjectCard = ({
   websiteUrl,
   alt,
 }: ProjectProps) => {
+  const { t } = useLanguage();
+  const localizedDescription = t(description);
   const iconsSize = 20;
-  const multipleParagraphs = description.split("//").length > 1;
-  const hasDescription = description.trim().length > 0;
+  const multipleParagraphs = localizedDescription.split("//").length > 1;
+  const hasDescription = localizedDescription.trim().length > 0;
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -39,7 +42,7 @@ export const ProjectCard = ({
       <div className="relative shrink-0 overflow-hidden bg-[var(--layer-200)] md:w-[280px]">
         <img
           src={image}
-          alt={alt ?? `${title} project preview`}
+          alt={alt ?? t({ en: `${title} project preview`, pt: `Prévia do projeto ${title}` })}
           className="h-56 w-full object-cover transition-transform duration-500 group-hover:scale-105 md:h-full md:min-h-[260px]"
         />
       </div>
@@ -55,7 +58,10 @@ export const ProjectCard = ({
               <Link
                 href={githubUrl}
                 target="_blank"
-                aria-label={`${title} on GitHub`}
+                aria-label={t({
+                  en: `${title} on GitHub`,
+                  pt: `${title} no GitHub`
+                })}
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border-color)] text-[var(--font-muted)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
               >
                 <GithubLogo size={iconsSize} />
@@ -65,7 +71,7 @@ export const ProjectCard = ({
               <Link
                 href={websiteUrl}
                 target="_blank"
-                aria-label={`${title} website`}
+                aria-label={t({ en: `${title} website`, pt: `Site de ${title}` })}
                 className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border-color)] text-[var(--font-muted)] transition-colors hover:border-[var(--accent-2)] hover:text-[var(--accent-2)]"
               >
                 <Globe size={iconsSize} />
@@ -77,12 +83,12 @@ export const ProjectCard = ({
         {hasDescription && (
           <div className="text-sm leading-relaxed text-[var(--font-muted)]">
             {(!isOpen && multipleParagraphs) || !multipleParagraphs ? (
-              <p className="mb-0">{description.split("//")[0]}</p>
+              <p className="mb-0">{localizedDescription.split("//")[0]}</p>
             ) : null}
 
             {isOpen &&
               multipleParagraphs &&
-              description
+              localizedDescription
                 .split("//")
                 .map((paragraph) => (
                   <p key={paragraph.slice(0, 20)} className="mb-3 last:mb-0">
@@ -98,7 +104,8 @@ export const ProjectCard = ({
             onClick={handleSetIsOpen}
             className="w-fit text-sm font-semibold text-[var(--accent)] underline decoration-[var(--accent-transparent)] decoration-2 underline-offset-4 transition-colors hover:text-[var(--accent-2)]"
           >
-            read {isOpen ? "less" : "more"}
+            {t({ en: "read", pt: "ler" })}{" "}
+            {isOpen ? t({ en: "less", pt: "menos" }) : t({ en: "more", pt: "mais" })}
           </button>
         )}
 

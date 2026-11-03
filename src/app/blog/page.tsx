@@ -9,7 +9,10 @@ export const metadata = {
 
 export default function Blog() {
   return (
-    <Section title="Blog" className="pt-16 md:pt-24">
+    <Section
+      title={{ en: "Blog", pt: "Blog" }}
+      className="pt-16 md:pt-24"
+    >
       <>
         {postsData.map((post) => (
           <FadeIn key={post.url}>

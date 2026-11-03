@@ -1,27 +1,29 @@
+import type { LocalizedText } from "@/lib/i18n";
+
 interface IPage {
-  page: string;
+  page: LocalizedText;
   path: string;
 }
 
 export const links: Array<IPage> = [
   {
-    page: 'Home',
-    path: '/',
+    page: { en: "Home", pt: "Início" },
+    path: "/",
   },
   {
-    page: 'Blog',
-    path: '/blog',
+    page: { en: "Blog", pt: "Blog" },
+    path: "/blog",
   },
   {
-    page: 'Experience',
-    path: '/experience',
+    page: { en: "Experience", pt: "Experiência" },
+    path: "/experience",
   },
   {
-    page: 'Manifesto',
-    path: '/manifesto',
+    page: { en: "Manifesto", pt: "Manifesto" },
+    path: "/manifesto",
   },
   {
-    page: 'Mascot',
-    path: '/mascot',
+    page: { en: "Mascot", pt: "Mascote" },
+    path: "/mascot",
   },
-]
+];

@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
 
+import { useLanguage } from "@/lib/i18n";
 import { ArrowRight, CalendarDots } from "@phosphor-icons/react";
 import Link from "next/link";
 
@@ -19,6 +20,7 @@ export const PostCard = ({
   preview,
   url,
 }: PostCardProps) => {
+  const { language: activeLanguage, t } = useLanguage();
   const dateSplit = date.includes("/") ? date.split("/") : date.split("-");
   const dateOrdered =
     Number.parseInt(dateSplit[0], 10) > Number.parseInt(dateSplit[2], 10)
@@ -28,23 +30,46 @@ export const PostCard = ({
   const [day, month, year] = dateOrdered;
 
   function translateMonth(month: string) {
-    const names: { [key: string]: string } = {
-      "01": "Jan",
-      "02": "Feb",
-      "03": "Mar",
-      "04": "Apr",
-      "05": "May",
-      "06": "Jun",
-      "07": "Jul",
-      "08": "Aug",
-      "09": "Sep",
-      "10": "Oct",
-      "11": "Nov",
-      "12": "Dec",
-    };
+    const names: { [key: string]: string } =
+      activeLanguage === "pt"
+        ? {
+            "01": "Jan",
+            "02": "Fev",
+            "03": "Mar",
+            "04": "Abr",
+            "05": "Mai",
+            "06": "Jun",
+            "07": "Jul",
+            "08": "Ago",
+            "09": "Set",
+            "10": "Out",
+            "11": "Nov",
+            "12": "Dez",
+          }
+        : {
+            "01": "Jan",
+            "02": "Feb",
+            "03": "Mar",
+            "04": "Apr",
+            "05": "May",
+            "06": "Jun",
+            "07": "Jul",
+            "08": "Aug",
+            "09": "Sep",
+            "10": "Oct",
+            "11": "Nov",
+            "12": "Dec",
+          };
 
     return names[month] || month;
   }
+
+  const languageLabel =
+    language === "Português"
+      ? t({ en: "Portuguese", pt: "Português" })
+      : language === "English"
+        ? t({ en: "English", pt: "Inglês" })
+        : language;
 
   return (
     <Link href={url} className="group mb-6 block">
@@ -74,7 +99,7 @@ export const PostCard = ({
 
           <div className="mt-2 flex items-center justify-between">
             <span className="rounded-full border border-[var(--border-color)] bg-[var(--layer-200)] px-3 py-1 text-xs text-[var(--font-muted)]">
-              {language}
+              {languageLabel}
             </span>
 
             <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[var(--border-color)] text-[var(--font-muted)] transition-all duration-300 group-hover:border-[var(--accent)] group-hover:text-[var(--accent)]">

@@ -1,5 +1,7 @@
 "use client";
 
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useLanguage, type LocalizedText } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { List, X } from "@phosphor-icons/react";
 import Link from "next/link";
@@ -8,13 +10,14 @@ import { useState } from "react";
 
 interface Props {
   pages: Array<{
-    page: string;
+    page: LocalizedText;
     path: string;
   }>;
 }
 
 export const Nav = ({ pages }: Props) => {
   const pathname = usePathname();
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
 
   const isActive = (path: string) =>
@@ -46,7 +49,7 @@ export const Nav = ({ pages }: Props) => {
 
           <ul className="hidden items-center gap-1 md:flex">
             {pages.map(({ page, path }) => (
-              <li key={page}>
+              <li key={path}>
                 <Link
                   href={path}
                   className={cn(
@@ -56,27 +59,34 @@ export const Nav = ({ pages }: Props) => {
                       : "text-[var(--font-muted)] hover:bg-[var(--layer-100)] hover:text-[var(--font-color)]"
                   )}
                 >
-                  {page}
+                  {t(page)}
                 </Link>
               </li>
             ))}
           </ul>
 
-          <button
-            type="button"
-            aria-label={isOpen ? "Close menu" : "Open menu"}
-            aria-expanded={isOpen}
-            onClick={() => setIsOpen((open) => !open)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border-color)] text-[var(--font-color)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)] md:hidden"
-          >
-            {isOpen ? <X size={22} /> : <List size={22} />}
-          </button>
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <button
+              type="button"
+              aria-label={
+                isOpen
+                  ? t({ en: "Close menu", pt: "Fechar menu" })
+                  : t({ en: "Open menu", pt: "Abrir menu" })
+              }
+              aria-expanded={isOpen}
+              onClick={() => setIsOpen((open) => !open)}
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-[var(--border-color)] text-[var(--font-color)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)] md:hidden"
+            >
+              {isOpen ? <X size={22} /> : <List size={22} />}
+            </button>
+          </div>
         </nav>
 
         {isOpen && (
           <ul className="grid gap-1 border-t border-[var(--border-color)] px-5 pb-4 pt-2 md:hidden">
             {pages.map(({ page, path }) => (
-              <li key={page}>
+              <li key={path}>
                 <Link
                   href={path}
                   onClick={() => setIsOpen(false)}
@@ -87,7 +97,7 @@ export const Nav = ({ pages }: Props) => {
                       : "text-[var(--font-muted)] hover:bg-[var(--layer-100)] hover:text-[var(--font-color)]"
                   )}
                 >
-                  {page}
+                  {t(page)}
                 </Link>
               </li>
             ))}

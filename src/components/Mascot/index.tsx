@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { useLanguage, type LocalizedText } from "@/lib/i18n";
 import { Grains, HandWaving, Heart, MoonStars, Sparkle } from "@phosphor-icons/react";
 import {
   AnimatePresence,
@@ -27,44 +28,94 @@ const SCRATCH_DURATION = 1_600;
 const ACTIONS = [
   {
     id: "hello",
-    label: "Say hi",
-    hint: "Squeak back",
+    label: { en: "Say hi", pt: "Diga oi" },
+    hint: { en: "Squeak back", pt: "Guinche de volta" },
     icon: HandWaving
   },
   {
     id: "feed",
-    label: "Drop seed",
-    hint: "She will walk for it",
+    label: { en: "Drop seed", pt: "Solte uma semente" },
+    hint: { en: "She will walk for it", pt: "Ela vai até ela" },
     icon: Grains
   },
   {
     id: "nap",
-    label: "Let her nap",
-    hint: "Do not disturb",
+    label: { en: "Let her nap", pt: "Deixe-a dormir" },
+    hint: { en: "Do not disturb", pt: "Não perturbe" },
     icon: MoonStars
   }
 ] as const;
 
 type ActionId = (typeof ACTIONS)[number]["id"];
 
-const MESSAGES: Record<Reaction, string[]> = {
+const MESSAGES: Record<Reaction, LocalizedText[]> = {
   hello: [
-    "Squeak. Hello, human.",
-    "You came to see me? Bold choice.",
-    "Hi. I was chewing on a cable.",
-    "You finally noticed me.",
-    "Hey, you brought snacks?",
-    "Mmm, let me smell your fingers.",
-    "Wanna trade secrets?",
-    "I can taste your fear.",
-    "I know where you sleep.",
-    "I'm hungry. Feed me.",
-    "Feed me. Feed me. Feed me.",
-    "I'm not fat, I'm fluffy.",
-    "Oh, you...",
-    "I will bite. That is the game.",
-    "I'm going to steal your Wi-Fi."
+    { en: "Squeak. Hello, human.", pt: "Guincho. Olá, humano." },
+    { en: "You came to see me? Bold choice.", pt: "Veio me ver? Escolha ousada." },
+    { en: "Hi. I was chewing on a cable.", pt: "Oi. Eu estava mastigando um cabo." },
+    { en: "You finally noticed me.", pt: "Finalmente você me notou." },
+    { en: "Hey, you brought snacks?", pt: "Ei, você trouxe petiscos?" },
+    { en: "Mmm, let me smell your fingers.", pt: "Hmm, deixa eu cheirar seus dedos." },
+    { en: "Wanna trade secrets?", pt: "Quer trocar segredos?" },
+    { en: "I can taste your fear.", pt: "Consigo sentir o gosto do seu medo." },
+    { en: "I know where you sleep.", pt: "Eu sei onde você dorme." },
+    { en: "I'm hungry. Feed me.", pt: "Estou com fome. Me alimente." },
+    { en: "Feed me. Feed me. Feed me.", pt: "Me alimente. Me alimente. Me alimente." },
+    { en: "I'm not fat, I'm fluffy.", pt: "Não sou gorda, sou fofinha." },
+    { en: "Oh, you...", pt: "Ah, você..." },
+    { en: "I will bite. That is the game.", pt: "Eu vou morder. Esse é o jogo." },
+    { en: "I'm going to steal your Wi-Fi.", pt: "Vou roubar seu Wi-Fi." }
   ]
+};
+
+const COPY = {
+  title: { en: "Meet Tuneba", pt: "Conheça Tuneba" },
+  initialSpeech: {
+    en: "I'm Tuneba. Move your cursor — I'll follow. Click anywhere and I'll come running.",
+    pt: "Eu sou a Tuneba. Mova o cursor — eu sigo. Clique em qualquer lugar e eu venho correndo."
+  },
+  wakeUp: {
+    en: "Oh! I was dreaming about sunflower seeds.",
+    pt: "Ah! Eu estava sonhando com sementes de girassol."
+  },
+  maxBond: {
+    en: "Five hearts. Fine. You may scratch my one good ear.",
+    pt: "Cinco corações. Tudo bem. Você pode coçar minha única orelha boa."
+  },
+  asleepMessage: {
+    en: "Zzz… wake me when the food lands.",
+    pt: "Zzz… me acorde quando a comida chegar."
+  },
+  status: {
+    asleep: { en: "Asleep — drop a sunflower seed to wake her", pt: "Dormindo — solte uma semente para acordá-la" },
+    toSnack: { en: "Walking to the seed", pt: "Indo até a semente" },
+    eating: { en: "Eating the sunflower seed", pt: "Comendo a semente de girassol" },
+    toWater: { en: "Heading to the water pipe", pt: "Indo até o bebedouro" },
+    drinking: { en: "Drinking water", pt: "Bebendo água" },
+    home: { en: "Waddling back home", pt: "Voltando para casa" },
+    scratching: { en: "Scratching her head", pt: "Coçando a cabeça" },
+    happy: { en: "Suspiciously pleased", pt: "Suspeitosamente satisfeita" },
+    idle: { en: "Watching you (for snacks)", pt: "Observando você (em busca de petiscos)" }
+  },
+  hint: {
+    en: "Click anywhere to drop a sunflower seed — Tuneba will walk over and eat it",
+    pt: "Clique em qualquer lugar para soltar uma semente — Tuneba vai até ela e come"
+  },
+  panel: {
+    eyebrow: { en: "Interactive mascot", pt: "Mascote interativa" },
+    heading: {
+      en: "A small gray hamster with a big appetite.",
+      pt: "Uma pequena hamster cinza com um apetite enorme."
+    },
+    body: {
+      en: "Tuneba is not pretty. She is not polite. She is, however, always hungry. Click anywhere in the stage to drop a sunflower seed, then watch her waddle over and eat it. Her eyes follow your cursor, unless she is asleep, in which case she does absolutely nothing.",
+      pt: "Tuneba não é bonita. Não é educada. Mas está sempre com fome. Clique em qualquer lugar do palco para soltar uma semente de girassol e veja-a cambalear até ela para comer. Os olhos dela seguem o cursor, a menos que esteja dormindo — nesse caso, ela não faz absolutamente nada."
+    },
+    footnote: {
+      en: "Tuneba is mostly fur, bad decisions, and an unfillable stomach. Her bond meter is yours to fill.",
+      pt: "Tuneba é basicamente pelo, decisões ruins e um estômago sem fundo. O medidor de vínculo é seu para preencher."
+    }
+  }
 };
 
 const SNACK_SIZE = 44;
@@ -90,6 +141,7 @@ const foodWalkDuration = (distance: number, still: boolean) =>
 
 export function Mascot() {
   const reduceMotion = useReducedMotion();
+  const { t } = useLanguage();
   const stageRef = useRef<HTMLDivElement>(null);
   const ratRef = useRef<HTMLDivElement>(null);
   const pipeRef = useRef<HTMLDivElement>(null);
@@ -105,10 +157,10 @@ export function Mascot() {
   const [scratching, setScratching] = useState(false);
   const [walkX, setWalkX] = useState(0);
   const [speech, setSpeech] = useState<{
-    text: string;
+    text: LocalizedText;
     id: number;
   } | null>({
-    text: "I'm Tuneba. Move your cursor — I'll follow. Click anywhere and I'll come running.",
+    text: COPY.initialSpeech,
     id: 0
   });
   const moodTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -137,7 +189,7 @@ export function Mascot() {
   });
   const eyeX = useTransform(pupilX, (value) => value * 0.3);
   const eyeY = useTransform(pupilY, (value) => value * 0.3);
-  const say = useCallback((text: string) => {
+  const say = useCallback((text: LocalizedText) => {
     speechId.current += 1;
     setSpeech({ text, id: speechId.current });
   }, []);
@@ -266,9 +318,9 @@ export function Mascot() {
     setMood("happy");
 
     if (wasAsleep) {
-      say("Oh! I was dreaming about sunflower seeds.");
+      say(COPY.wakeUp);
     } else if (bond === 4) {
-      say("Five hearts. Fine. You may scratch my one good ear.");
+      say(COPY.maxBond);
     } else {
       const options = MESSAGES[action];
       say(options[Math.floor(Math.random() * options.length)]);
@@ -634,26 +686,26 @@ export function Mascot() {
       : foodWalkDuration(Math.abs(walkX), Boolean(reduceMotion));
 
   const status = sleeping
-    ? "Asleep — drop a seed to wake her"
+    ? t(COPY.status.asleep)
     : ratPhase === "toSnack"
-      ? "Walking to the seed"
+      ? t(COPY.status.toSnack)
       : ratPhase === "eating"
-        ? "Eating the sunflower seed"
+        ? t(COPY.status.eating)
         : ratPhase === "toWater"
-          ? "Heading to the water pipe"
+          ? t(COPY.status.toWater)
           : ratPhase === "drinking"
-            ? "Drinking water"
+            ? t(COPY.status.drinking)
             : ratPhase === "home"
-              ? "Waddling back home"
+              ? t(COPY.status.home)
               : scratching
-                ? "Scratching her head"
+                ? t(COPY.status.scratching)
                 : mood === "happy"
-                  ? "Suspiciously pleased"
-                  : "Watching you (for snacks)";
+                  ? t(COPY.status.happy)
+                  : t(COPY.status.idle);
 
   // State-driven messages replace the sticky speech bubble while he is busy.
   const message = sleeping
-    ? { text: "Zzz… wake me when the food lands.", id: -1 }
+    ? { text: COPY.asleepMessage, id: -1 }
     : ratPhase !== "idle"
       ? null
       : speech;
@@ -663,7 +715,7 @@ export function Mascot() {
       <div className="mb-10 flex items-center gap-5">
         <div className="flex items-center gap-3">
           <h1 className="gradient-text block font-display text-[1.5rem] font-bold md:text-[1.75rem]">
-            Meet Tuneba
+            {t(COPY.title)}
           </h1>
         </div>
         <span className="hairline min-w-8 flex-1" aria-hidden />
@@ -707,7 +759,7 @@ export function Mascot() {
                   transition={{ duration: 0.22 }}
                   className="relative flex h-[84px] w-full max-w-[320px] items-center justify-center rounded-2xl border border-[var(--border-color)] bg-[var(--layer-200)] px-4 py-3 text-center text-sm leading-snug text-[var(--font-color)] shadow-[var(--shadow-card)]"
                 >
-                  {message.text}
+                  {t(message.text)}
                   <span
                     aria-hidden
                     className="absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 border-b border-r border-[var(--border-color)] bg-[var(--layer-200)]"
@@ -718,7 +770,7 @@ export function Mascot() {
           </div>
 
           <span className="sr-only" role="status" aria-live="polite">
-            {message?.text ?? ""}
+            {message ? t(message.text) : ""}
           </span>
 
           <div
@@ -1415,23 +1467,20 @@ export function Mascot() {
 
           <p className="mt-6 flex items-center gap-2 text-xs text-[var(--font-muted)]">
             <Sparkle size={14} className="text-[var(--accent)]" />
-            Click anywhere to drop a sunflower seed
+            {t(COPY.hint)}
           </p>
         </div>
 
         <div className="flex flex-col gap-4">
           <div className="surface flex flex-1 flex-col rounded-[2rem] p-6 md:p-7">
             <span className="font-display text-xs font-semibold uppercase tracking-[0.28em] text-[var(--accent)]">
-              Interactive mascot
+              {t(COPY.panel.eyebrow)}
             </span>
             <h2 className="mt-3 font-display text-2xl font-bold leading-tight md:text-3xl">
-              A small gray hamster with a big appetite.
+              {t(COPY.panel.heading)}
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-[var(--font-muted)]">
-              Tuneba is not pretty. She is not polite. She is, however, always hungry. Click
-              anywhere in the stage to drop a sunflower seed, then watch her waddle over and
-              eat it. Her eyes follow your cursor, unless she is asleep, in which case she
-              does absolutely nothing.
+              {t(COPY.panel.body)}
             </p>
 
             <div className="my-6 hairline" />
@@ -1454,7 +1503,10 @@ export function Mascot() {
 
               <div
                 className="flex items-center gap-1"
-                aria-label={`Bond: ${bond} out of 5 hearts`}
+                aria-label={t({
+                  en: `Bond: ${bond} out of 5 hearts`,
+                  pt: `Vínculo: ${bond} de 5 corações`
+                })}
               >
                 {[0, 1, 2, 3, 4].map((index) => (
                   <Heart
@@ -1491,10 +1543,10 @@ export function Mascot() {
                   />
                   <span>
                     <span className="block text-sm font-semibold text-[var(--font-color)]">
-                      {action.label}
+                      {t(action.label)}
                     </span>
                     <span className="block text-xs text-[var(--font-muted)]">
-                      {action.hint}
+                      {t(action.hint)}
                     </span>
                   </span>
                 </button>
@@ -1503,8 +1555,7 @@ export function Mascot() {
           </div>
 
           <p className="px-2 text-xs leading-relaxed text-[var(--font-muted)]">
-            Tuneba is mostly fur, bad decisions, and an unfillable stomach. His bond meter
-            is yours to fill.
+            {t(COPY.panel.footnote)}
           </p>
         </div>
       </div>
