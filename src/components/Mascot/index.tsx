@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { Cheese, HandWaving, Heart, MoonStars, Sparkle } from "@phosphor-icons/react";
+import { Grains, HandWaving, Heart, MoonStars, Sparkle } from "@phosphor-icons/react";
 import {
   AnimatePresence,
   motion,
@@ -18,6 +18,11 @@ type RatPhase = "idle" | "toSnack" | "eating" | "toWater" | "drinking" | "home";
 
 const DRINK_INTERVAL_MIN = 120_000;
 const DRINK_INTERVAL_MAX = 180_000;
+const SLEEP_WAIT = 50_000;
+
+const SCRATCH_INTERVAL_MIN = 10_000;
+const SCRATCH_INTERVAL_MAX = 40_000;
+const SCRATCH_DURATION = 1_600;
 
 const ACTIONS = [
   {
@@ -28,13 +33,13 @@ const ACTIONS = [
   },
   {
     id: "feed",
-    label: "Drop food",
-    hint: "He will walk for it",
-    icon: Cheese
+    label: "Drop seed",
+    hint: "She will walk for it",
+    icon: Grains
   },
   {
     id: "nap",
-    label: "Let him nap",
+    label: "Let her nap",
     hint: "Do not disturb",
     icon: MoonStars
   }
@@ -58,7 +63,7 @@ const MESSAGES: Record<Reaction, string[]> = {
     "I'm not fat, I'm fluffy.",
     "Oh, you...",
     "I will bite. That is the game.",
-    "I'm going to steal your Wi-Fi.",
+    "I'm going to steal your Wi-Fi."
   ]
 };
 
@@ -88,25 +93,31 @@ export function Mascot() {
   const stageRef = useRef<HTMLDivElement>(null);
   const ratRef = useRef<HTMLDivElement>(null);
   const pipeRef = useRef<HTMLDivElement>(null);
+  const mouthRef = useRef<SVGGElement>(null);
 
   const [mood, setMood] = useState<Mood>("idle");
+  const [bottleTop, setBottleTop] = useState<number | null>(null);
   const [blink, setBlink] = useState(false);
   const [sleeping, setSleeping] = useState(false);
   const [bond, setBond] = useState(1);
   const [snack, setSnack] = useState<Snack | null>(null);
   const [ratPhase, setRatPhase] = useState<RatPhase>("idle");
+  const [scratching, setScratching] = useState(false);
   const [walkX, setWalkX] = useState(0);
   const [speech, setSpeech] = useState<{
     text: string;
     id: number;
   } | null>({
-    text: "I'm Lester. Move your cursor — I'll follow. Click anywhere and I'll come running.",
+    text: "I'm Tuneba. Move your cursor — I'll follow. Click anywhere and I'll come running.",
     id: 0
   });
   const moodTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sleepTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const waterTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scratchTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scratchEndTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const startWaterTripRef = useRef<() => void>(() => {});
+  const startScratchRef = useRef<() => void>(() => {});
   const snackId = useRef(0);
   const walkedDistance = useRef(0);
   const speechId = useRef(0);
@@ -124,6 +135,8 @@ export function Mascot() {
     damping: 20,
     mass: 0.4
   });
+  const eyeX = useTransform(pupilX, (value) => value * 0.3);
+  const eyeY = useTransform(pupilY, (value) => value * 0.3);
   const say = useCallback((text: string) => {
     speechId.current += 1;
     setSpeech({ text, id: speechId.current });
@@ -134,12 +147,17 @@ export function Mascot() {
     setSpeech(null);
   }, []);
 
+  const stopScratching = useCallback(() => {
+    if (scratchEndTimer.current) clearTimeout(scratchEndTimer.current);
+    setScratching(false);
+  }, []);
+
   const scheduleSleep = useCallback(() => {
     if (sleepTimer.current) clearTimeout(sleepTimer.current);
     sleepTimer.current = setTimeout(() => {
       setSleeping(true);
       setMood("sleeping");
-    }, 30000);
+    }, SLEEP_WAIT);
   }, []);
 
   useEffect(() => {
@@ -156,6 +174,31 @@ export function Mascot() {
       pointerY.set(0);
     }
   }, [sleeping, pointerX, pointerY]);
+
+  useEffect(() => {
+    const measureBottle = () => {
+      const stage = stageRef.current;
+      const mouth = mouthRef.current;
+      if (!stage || !mouth) return;
+
+      const stageRect = stage.getBoundingClientRect();
+      const mouthRect = mouth.getBoundingClientRect();
+
+      setBottleTop(mouthRect.top + mouthRect.height / 2 - stageRect.top - 140);
+    };
+
+    const frame = requestAnimationFrame(measureBottle);
+    window.addEventListener("resize", measureBottle);
+    const observer = new ResizeObserver(measureBottle);
+    if (stageRef.current) observer.observe(stageRef.current);
+    if (ratRef.current) observer.observe(ratRef.current);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("resize", measureBottle);
+      observer.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     if (reduceMotion || sleeping) return;
@@ -204,6 +247,8 @@ export function Mascot() {
     () => () => {
       if (moodTimer.current) clearTimeout(moodTimer.current);
       if (sleepTimer.current) clearTimeout(sleepTimer.current);
+      if (scratchTimer.current) clearTimeout(scratchTimer.current);
+      if (scratchEndTimer.current) clearTimeout(scratchEndTimer.current);
     },
     []
   );
@@ -217,7 +262,7 @@ export function Mascot() {
     setMood("happy");
 
     if (wasAsleep) {
-      say("Oh! I was dreaming about cheese.");
+      say("Oh! I was dreaming about sunflower seeds.");
     } else if (bond === 4) {
       say("Five hearts. Fine. You may scratch my one good ear.");
     } else {
@@ -225,7 +270,7 @@ export function Mascot() {
       say(options[Math.floor(Math.random() * options.length)]);
     }
 
-    setBond((current) => Math.min(5, current + 1));
+    setBond((current) => (Math.random() < 0.2 ? Math.min(5, current + 1) : current));
 
     if (moodTimer.current) clearTimeout(moodTimer.current);
     moodTimer.current = setTimeout(() => setMood("idle"), 1800);
@@ -257,11 +302,12 @@ export function Mascot() {
       const maxOffset = Math.max(0, bounds.width / 2 - bounds.ratWidth / 2 - 8);
       const targetX = clamp(target.x - bounds.width / 2, -maxOffset, maxOffset);
 
+      stopScratching();
       walkedDistance.current = Math.abs(targetX);
       setWalkX(targetX);
       setRatPhase("toSnack");
     },
-    [measureStage]
+    [measureStage, stopScratching]
   );
 
   const scheduleNextDrink = useCallback((delay?: number) => {
@@ -275,7 +321,7 @@ export function Mascot() {
   }, []);
 
   const startWaterTrip = useCallback(() => {
-    if (ratPhase !== "idle" || snack) {
+    if (ratPhase !== "idle" || snack || scratching) {
       scheduleNextDrink(15_000);
       return;
     }
@@ -303,7 +349,7 @@ export function Mascot() {
     walkedDistance.current = Math.abs(targetX);
     setWalkX(targetX);
     setRatPhase("toWater");
-  }, [clearSpeech, measureStage, ratPhase, scheduleNextDrink, scheduleSleep, snack]);
+  }, [clearSpeech, measureStage, ratPhase, scheduleNextDrink, scheduleSleep, snack, scratching]);
 
   startWaterTripRef.current = startWaterTrip;
 
@@ -314,6 +360,40 @@ export function Mascot() {
       if (waterTimer.current) clearTimeout(waterTimer.current);
     };
   }, [scheduleNextDrink]);
+
+  const scheduleNextScratch = useCallback((delay?: number) => {
+    if (scratchTimer.current) clearTimeout(scratchTimer.current);
+
+    scratchTimer.current = setTimeout(
+      () => startScratchRef.current(),
+      delay ??
+        SCRATCH_INTERVAL_MIN + Math.random() * (SCRATCH_INTERVAL_MAX - SCRATCH_INTERVAL_MIN)
+    );
+  }, []);
+
+  const startScratch = useCallback(() => {
+    if (sleeping || ratPhase !== "idle" || snack || scratching) {
+      scheduleNextScratch();
+      return;
+    }
+
+    setScratching(true);
+    scratchEndTimer.current = setTimeout(() => {
+      setScratching(false);
+      scheduleNextScratch();
+    }, SCRATCH_DURATION);
+  }, [ratPhase, scheduleNextScratch, scratching, sleeping, snack]);
+
+  startScratchRef.current = startScratch;
+
+  useEffect(() => {
+    scheduleNextScratch();
+
+    return () => {
+      if (scratchTimer.current) clearTimeout(scratchTimer.current);
+      if (scratchEndTimer.current) clearTimeout(scratchEndTimer.current);
+    };
+  }, [scheduleNextScratch]);
 
   const dropSnackAt = (x: number, y: number) => {
     if (snack || ratPhase !== "idle") return;
@@ -422,6 +502,7 @@ export function Mascot() {
   const nap = () => {
     if (sleepTimer.current) clearTimeout(sleepTimer.current);
     if (moodTimer.current) clearTimeout(moodTimer.current);
+    stopScratching();
     setSnack(null);
     setRatPhase("idle");
     setWalkX(0);
@@ -445,8 +526,10 @@ export function Mascot() {
     react(action);
   };
 
-  const eyesClosed = sleeping || blink;
+  const eyesClosed = sleeping || blink || scratching;
   const still = Boolean(reduceMotion) || sleeping;
+  const walking = ratPhase === "toSnack" || ratPhase === "toWater" || ratPhase === "home";
+  const drinking = ratPhase === "drinking";
 
   const noseAnimation = still
     ? { x: 0, y: 0, scaleX: 1 }
@@ -462,7 +545,13 @@ export function Mascot() {
             y: [0, 0.6, -0.6, 0],
             scaleX: [1, 1.08, 0.96, 1.04, 1]
           }
-        : { x: 0, y: [0, -0.8, 0], scaleX: 1 };
+        : walking
+          ? {
+              x: [0, -1, 1, 0],
+              y: [0, -0.7, 0.3, 0],
+              scaleX: [1, 1.03, 0.98, 1]
+            }
+          : { x: 0, y: [0, -0.8, 0], scaleX: 1 };
 
   const noseTransition = still
     ? { duration: 0 }
@@ -470,30 +559,93 @@ export function Mascot() {
       ? { duration: 0.55, repeat: 2, ease: "easeInOut" as const }
       : mood === "eating"
         ? { duration: 0.4, repeat: 3, ease: "easeInOut" as const }
-        : { duration: 3.2, repeat: Infinity, ease: "easeInOut" as const };
+        : walking
+          ? { duration: 0.64, repeat: Infinity, ease: "easeInOut" as const }
+          : { duration: 3.2, repeat: Infinity, ease: "easeInOut" as const };
 
-  const walking = ratPhase === "toSnack" || ratPhase === "toWater" || ratPhase === "home";
-  const drinking = ratPhase === "drinking";
+  // The feet alternate while he waddles, and do a small happy shuffle on a greeting.
+  const leftLegAnimation = still
+    ? { y: 0, rotate: 0 }
+    : walking
+      ? { y: [0, -4, 0, 0], rotate: [0, -7, 4, 0] }
+      : mood === "happy"
+        ? { y: [0, -2, 0], rotate: [0, -3, 2, 0] }
+        : { y: 0, rotate: 0 };
+
+  const rightLegAnimation = still
+    ? { y: 0, rotate: 0 }
+    : walking
+      ? { y: [0, 0, -4, 0], rotate: [0, 0, -4, 7] }
+      : mood === "happy"
+        ? { y: [0, -2, 0], rotate: [0, 3, -2, 0] }
+        : { y: 0, rotate: 0 };
+
+  const legTransition = still
+    ? { duration: 0 }
+    : walking
+      ? { duration: 0.64, repeat: Infinity, ease: "easeInOut" as const }
+      : mood === "happy"
+        ? { duration: 0.6, repeat: 2, ease: "easeInOut" as const }
+        : { duration: 0.3 };
+
+  const pawAnimation = still
+    ? { y: 0, rotate: 0 }
+    : mood === "happy"
+      ? { y: [0, -3, 0], rotate: [0, -6, 0] }
+      : mood === "eating"
+        ? { y: [0, -1.5, 0], rotate: [0, -3, 0] }
+        : { y: 0, rotate: 0 };
+
+  const pawTransition = still
+    ? { duration: 0 }
+    : mood === "happy"
+      ? { duration: 0.6, repeat: 2, ease: "easeInOut" as const }
+      : mood === "eating"
+        ? { duration: 0.4, repeat: 3, ease: "easeInOut" as const }
+        : { duration: 0.3 };
+
+  // Both paws lift to the ears and scritch while she is scratching.
+  const scratchTransition = {
+    duration: SCRATCH_DURATION / 1000,
+    ease: "easeInOut" as const
+  };
+
+  const leftPawAnimation =
+    scratching && !still
+      ? { x: [0, 14, 9, 14, 0], y: [0, -62, -58, -62, 0], rotate: [0, 24, 12, 24, 0] }
+      : pawAnimation;
+
+  const leftPawTransition = scratching && !still ? scratchTransition : pawTransition;
+
+  const rightPawAnimation =
+    scratching && !still
+      ? { x: [0, -14, -9, -14, 0], y: [0, -62, -58, -62, 0], rotate: [0, -24, -12, -24, 0] }
+      : pawAnimation;
+
+  const rightPawTransition = scratching && !still ? scratchTransition : pawTransition;
+
   const walkDuration =
     ratPhase === "home"
       ? foodWalkDuration(walkedDistance.current, Boolean(reduceMotion))
       : foodWalkDuration(Math.abs(walkX), Boolean(reduceMotion));
 
   const status = sleeping
-    ? "Asleep — drop a meatball to wake him"
+    ? "Asleep — drop a seed to wake her"
     : ratPhase === "toSnack"
-      ? "Walking to the snack"
+      ? "Walking to the seed"
       : ratPhase === "eating"
-        ? "Eating the meatball"
+        ? "Eating the sunflower seed"
         : ratPhase === "toWater"
           ? "Heading to the water pipe"
           : ratPhase === "drinking"
             ? "Drinking water"
             : ratPhase === "home"
               ? "Waddling back home"
-              : mood === "happy"
-                ? "Suspiciously pleased"
-                : "Watching you (for snacks)";
+              : scratching
+                ? "Scratching her head"
+                : mood === "happy"
+                  ? "Suspiciously pleased"
+                  : "Watching you (for snacks)";
 
   // State-driven messages replace the sticky speech bubble while he is busy.
   const message = sleeping
@@ -507,7 +659,7 @@ export function Mascot() {
       <div className="mb-10 flex items-center gap-5">
         <div className="flex items-center gap-3">
           <h1 className="gradient-text block font-display text-[1.5rem] font-bold md:text-[1.75rem]">
-            Meet Lester
+            Meet Tuneba
           </h1>
         </div>
         <span className="hairline min-w-8 flex-1" aria-hidden />
@@ -540,7 +692,7 @@ export function Mascot() {
             className="pointer-events-none absolute bottom-[12%] right-[10%] h-[190px] w-[190px] rounded-full bg-[var(--accent-2)] opacity-[0.12] blur-[80px]"
           />
 
-          <div className="pointer-events-none absolute inset-x-4 top-5 z-10 flex justify-center">
+          <div className="pointer-events-none absolute inset-x-4 top-5 z-10 flex h-[84px] justify-center">
             <AnimatePresence mode="wait">
               {message && (
                 <motion.div
@@ -549,7 +701,7 @@ export function Mascot() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: -6, scale: 0.98 }}
                   transition={{ duration: 0.22 }}
-                  className="relative max-w-[320px] rounded-2xl border border-[var(--border-color)] bg-[var(--layer-200)] px-4 py-3 text-center text-sm text-[var(--font-color)] shadow-[var(--shadow-card)]"
+                  className="relative flex h-[84px] w-full max-w-[320px] items-center justify-center rounded-2xl border border-[var(--border-color)] bg-[var(--layer-200)] px-4 py-3 text-center text-sm leading-snug text-[var(--font-color)] shadow-[var(--shadow-card)]"
                 >
                   {message.text}
                   <span
@@ -568,7 +720,8 @@ export function Mascot() {
           <div
             ref={pipeRef}
             aria-hidden
-            className="pointer-events-none absolute bottom-[36%] left-[8%] z-10 h-[155px] w-[120px]"
+            className="pointer-events-none absolute left-[8%] z-10 h-[155px] w-[120px]"
+            style={{ top: bottleTop ?? "23%" }}
           >
             <svg
               viewBox="0 0 120 155"
@@ -576,7 +729,7 @@ export function Mascot() {
             >
               <defs>
                 <linearGradient
-                  id="lester-bottle"
+                  id="tuneba-bottle"
                   x1="28"
                   y1="0"
                   x2="76"
@@ -588,7 +741,7 @@ export function Mascot() {
                   <stop offset="1" stopColor="#6aa8c0" />
                 </linearGradient>
                 <linearGradient
-                  id="lester-bottle-water"
+                  id="tuneba-bottle-water"
                   x1="0"
                   y1="58"
                   x2="0"
@@ -599,7 +752,7 @@ export function Mascot() {
                   <stop offset="1" stopColor="#3d8cad" />
                 </linearGradient>
                 <linearGradient
-                  id="lester-bottle-tube"
+                  id="tuneba-bottle-tube"
                   x1="50"
                   y1="108"
                   x2="100"
@@ -661,13 +814,13 @@ export function Mascot() {
                 width="48"
                 height="90"
                 rx="16"
-                fill="url(#lester-bottle)"
+                fill="url(#tuneba-bottle)"
                 stroke="#4b7f96"
                 strokeWidth="1.4"
               />
               <path
                 d="M31 56 q10 -5 21 0 t21 0 v36 a13 13 0 0 1 -13 13 h-16 a13 13 0 0 1 -13 -13 Z"
-                fill="url(#lester-bottle-water)"
+                fill="url(#tuneba-bottle-water)"
                 opacity="0.85"
               />
               <rect
@@ -694,7 +847,7 @@ export function Mascot() {
               <path
                 d="M52 110 C 52 128, 74 132, 96 138"
                 fill="none"
-                stroke="url(#lester-bottle-tube)"
+                stroke="url(#tuneba-bottle-tube)"
                 strokeWidth="7"
                 strokeLinecap="round"
               />
@@ -781,286 +934,398 @@ export function Mascot() {
               >
                 <defs>
                   <linearGradient
-                    id="lester-fur"
-                    x1="58"
+                    id="tuneba-fur"
+                    x1="84"
                     y1="48"
-                    x2="206"
-                    y2="216"
+                    x2="188"
+                    y2="220"
                     gradientUnits="userSpaceOnUse"
                   >
-                    <stop stopColor="#a89b8b" />
-                    <stop offset="1" stopColor="#6b6155" />
+                    <stop stopColor="#d8d7d1" />
+                    <stop offset="0.55" stopColor="#c3c2bb" />
+                    <stop offset="1" stopColor="#a6a59e" />
                   </linearGradient>
                   <linearGradient
-                    id="lester-ear"
-                    x1="70"
-                    y1="40"
-                    x2="190"
-                    y2="100"
+                    id="tuneba-ear"
+                    x1="90"
+                    y1="52"
+                    x2="170"
+                    y2="86"
                     gradientUnits="userSpaceOnUse"
                   >
-                    <stop stopColor="#e4a5a8" />
-                    <stop offset="1" stopColor="#c97f86" />
+                    <stop stopColor="#fdcdce" />
+                    <stop offset="1" stopColor="#f2aaac" />
                   </linearGradient>
-                  <linearGradient
-                    id="lester-belly"
-                    x1="92"
-                    y1="140"
-                    x2="168"
-                    y2="214"
-                    gradientUnits="userSpaceOnUse"
+                  <radialGradient id="tuneba-belly" cx="0.5" cy="0.35" r="0.7">
+                    <stop stopColor="#eeebe2" stopOpacity="0.78" />
+                    <stop offset="0.62" stopColor="#e2ded4" stopOpacity="0.45" />
+                    <stop offset="1" stopColor="#e2ded4" stopOpacity="0" />
+                  </radialGradient>
+                  <radialGradient id="tuneba-muzzle" cx="0.5" cy="0.5" r="0.55">
+                    <stop stopColor="#f0ece3" stopOpacity="0.9" />
+                    <stop offset="1" stopColor="#f0ece3" stopOpacity="0" />
+                  </radialGradient>
+                  <pattern
+                    id="tuneba-fur-texture"
+                    width="14"
+                    height="14"
+                    patternUnits="userSpaceOnUse"
                   >
-                    <stop stopColor="#d8cdbc" />
-                    <stop offset="1" stopColor="#bcb09f" />
-                  </linearGradient>
+                    <path
+                      d="M2 11 q3 -3 6 -2"
+                      fill="none"
+                      stroke="#ffffff"
+                      strokeWidth="0.4"
+                      opacity="0.35"
+                    />
+                    <path
+                      d="M8 3 q2 3 3 6"
+                      fill="none"
+                      stroke="#34342f"
+                      strokeWidth="0.4"
+                      opacity="0.25"
+                    />
+                    <path
+                      d="M4 5 q1 2 2 3"
+                      fill="none"
+                      stroke="#ffffff"
+                      strokeWidth="0.35"
+                      opacity="0.2"
+                    />
+                    <path
+                      d="M10 10 q1 1 2 2"
+                      fill="none"
+                      stroke="#5f5e58"
+                      strokeWidth="0.35"
+                      opacity="0.2"
+                    />
+                  </pattern>
                 </defs>
 
-                <ellipse cx="130" cy="232" rx="58" ry="9" fill="#000" opacity="0.32" />
+                <ellipse cx="130" cy="232" rx="54" ry="8" fill="#000" opacity="0.3" />
 
-                <g>
+                <g transform="translate(0 232) scale(1 0.88) translate(0 -232)">
                   <g>
-                    {/* tail */}
-                    <g>
-                      <path
-                        d="M188 198 C 224 202 240 178 226 158 C 216 144 198 148 200 162"
-                        fill="none"
-                        stroke="#d98a8f"
-                        strokeWidth="7"
-                        strokeLinecap="round"
-                      />
-                    </g>
-
-                    {/* feet */}
-                    <ellipse cx="103" cy="218" rx="18" ry="8" fill="#d98a8f" />
-                    <ellipse cx="157" cy="218" rx="18" ry="8" fill="#d98a8f" />
-                    <path
-                      d="M94 222 v4 M103 223 v5 M112 222 v4 M148 222 v4 M157 223 v5 M166 222 v4"
-                      stroke="#b56e75"
-                      strokeWidth="1.6"
-                      strokeLinecap="round"
-                    />
-
-                    {/* body */}
-                    <path
-                      d="M130 92 C 172 92 196 124 196 158 C 196 192 168 214 130 214 C 92 214 64 192 64 158 C 64 124 88 92 130 92 Z"
-                      fill="url(#lester-fur)"
-                    />
-                    <ellipse
-                      cx="130"
-                      cy="177"
-                      rx="45"
-                      ry="34"
-                      fill="url(#lester-belly)"
-                      opacity="0.9"
-                    />
-
-                    {/* scruffy body tufts */}
-                    <path d="M65 143 L48 135 L63 152 L46 157 L65 164 Z" fill="#7c7164" />
-                    <path
-                      d="M195 148 L212 140 L197 156 L214 162 L195 168 Z"
-                      fill="#7c7164"
-                    />
-                    <path d="M76 188 L62 194 L78 198 Z" fill="#7c7164" />
-                    <path d="M184 188 L198 194 L182 198 Z" fill="#7c7164" />
-
-                    {/* arms */}
-                    <path
-                      d="M78 158 Q60 164 64 178"
-                      fill="none"
-                      stroke="url(#lester-fur)"
-                      strokeWidth="13"
-                      strokeLinecap="round"
-                    />
-                    <ellipse cx="64" cy="181" rx="10" ry="8" fill="#c9bdac" />
-                    <path
-                      d="M57 184 l-4 5 M62 187 l-2 6 M68 187 l1 6"
-                      stroke="#8a7e6e"
-                      strokeWidth="1.6"
-                      strokeLinecap="round"
-                    />
-
-                    <g>
-                      <path
-                        d="M182 158 Q200 164 196 178"
-                        fill="none"
-                        stroke="url(#lester-fur)"
-                        strokeWidth="13"
-                        strokeLinecap="round"
-                      />
-                      <ellipse cx="196" cy="181" rx="10" ry="8" fill="#c9bdac" />
-                      <path
-                        d="M189 184 l4 5 M194 187 l2 6 M200 187 l-1 6"
-                        stroke="#8a7e6e"
-                        strokeWidth="1.6"
-                        strokeLinecap="round"
-                      />
-                    </g>
-
                     {/* ears */}
                     <g>
-                      <circle cx="82" cy="65" r="28" fill="url(#lester-fur)" />
-                      <ellipse cx="82" cy="65" rx="17" ry="16" fill="url(#lester-ear)" />
-                      <path
-                        d="M74 58 q6 -5 12 0 M72 70 q5 -4 10 0"
-                        fill="none"
-                        stroke="#b56e75"
-                        strokeWidth="1.4"
-                        strokeLinecap="round"
-                        opacity="0.7"
+                      <ellipse
+                        cx="78"
+                        cy="64"
+                        rx="24.84"
+                        ry="28.52"
+                        fill="url(#tuneba-fur)"
+                        stroke="#33332f"
+                        strokeWidth="4"
                       />
-                    </g>
-                    <g transform="rotate(8 160 84)">
-                      <ellipse cx="181" cy="61" rx="33" ry="30" fill="url(#lester-fur)" />
-                      <ellipse cx="181" cy="61" rx="21" ry="18" fill="url(#lester-ear)" />
-                      <path
-                        d="M166 50 q8 -6 16 0 M164 66 q9 -6 18 0"
-                        fill="none"
-                        stroke="#b56e75"
-                        strokeWidth="1.4"
-                        strokeLinecap="round"
-                        opacity="0.7"
+                      <ellipse
+                        cx="78"
+                        cy="68"
+                        rx="15.64"
+                        ry="19.32"
+                        fill="url(#tuneba-ear)"
+                        stroke="#c9908e"
+                        strokeWidth="1.5"
+                      />
+                      <ellipse
+                        cx="182"
+                        cy="64"
+                        rx="24.84"
+                        ry="28.52"
+                        fill="url(#tuneba-fur)"
+                        stroke="#33332f"
+                        strokeWidth="4"
+                      />
+                      <ellipse
+                        cx="182"
+                        cy="68"
+                        rx="15.64"
+                        ry="19.32"
+                        fill="url(#tuneba-ear)"
+                        stroke="#c9908e"
+                        strokeWidth="1.5"
                       />
                     </g>
 
-                    {/* head */}
+                    {/* body — a separate pear-shaped part behind the head */}
                     <path
-                      d="M78 98 C 78 66 100 46 130 46 C 160 46 182 66 182 98 C 182 120 171 136 157 144 L 153 160 C 149 177 141 187 130 187 C 119 187 111 177 107 160 L 103 144 C 89 136 78 120 78 98 Z"
-                      fill="url(#lester-fur)"
-                    />
-
-                    {/* scruffy head tufts */}
-                    <path
-                      d="M116 48 C 111 38 115 30 123 25 M130 47 C 130 36 134 30 141 27 M143 49 C 151 40 151 32 147 26"
-                      fill="none"
-                      stroke="#6b6155"
+                      d="M130 118 C 160 118 184 132 197 158 C 210 184 205 209 182 220 C 166 228 94 228 78 220 C 55 209 50 184 63 158 C 76 132 100 118 130 118 Z"
+                      fill="url(#tuneba-fur)"
+                      stroke="#33332f"
                       strokeWidth="4"
-                      strokeLinecap="round"
                     />
-
-                    {/* muzzle */}
-                    <ellipse cx="130" cy="150" rx="33" ry="31" fill="#c9bdac" />
-
-                    {/* eye patch */}
                     <path
-                      d="M86 92 C 94 78 112 74 122 84 C 128 92 124 104 116 110 C 106 118 90 112 86 102 Z"
-                      fill="#5f564a"
+                      d="M130 118 C 160 118 184 132 197 158 C 176 142 154 136 130 136 C 106 136 84 142 63 158 C 76 132 100 118 130 118 Z"
+                      fill="#b3b2ab"
                       opacity="0.45"
                     />
+                    <path
+                      d="M130 148 C 150 148 164 170 163 192 C 162 211 149 221 130 222 C 111 221 98 211 97 192 C 96 170 110 148 130 148 Z"
+                      fill="url(#tuneba-belly)"
+                    />
+                    <path
+                      d="M130 118 C 160 118 184 132 197 158 C 210 184 205 209 182 220 C 166 228 94 228 78 220 C 55 209 50 184 63 158 C 76 132 100 118 130 118 Z"
+                      fill="url(#tuneba-fur-texture)"
+                      opacity="0.3"
+                    />
+                    <path
+                      d="M96 152 C 108 176 152 176 164 152 C 160 180 148 190 130 190 C 112 190 100 180 96 152 Z"
+                      fill="#918f87"
+                      opacity="0.22"
+                    />
+
+                    {/* soft side shading */}
+                    <path
+                      d="M56 164 C 54 187 61 207 80 219 C 68 206 65 187 69 167 Z"
+                      fill="#807f78"
+                      opacity="0.18"
+                    />
+                    <path
+                      d="M204 164 C 206 187 199 207 180 219 C 192 206 195 187 191 167 Z"
+                      fill="#807f78"
+                      opacity="0.18"
+                    />
+
+                    {/* hind feet */}
+                    <motion.g
+                      animate={leftLegAnimation}
+                      transition={legTransition}
+                      style={{ transformOrigin: "104px 220px" }}
+                    >
+                      <ellipse
+                        cx="104"
+                        cy="220"
+                        rx="13"
+                        ry="8.5"
+                        fill="#f7c4c5"
+                        stroke="#be8584"
+                        strokeWidth="2.4"
+                      />
+                      <path
+                        d="M98 223 l-1 3 M103 224 l0 3 M108 223 l1 3"
+                        fill="none"
+                        stroke="#c98d8c"
+                        strokeWidth="1.1"
+                        strokeLinecap="round"
+                      />
+                    </motion.g>
+                    <motion.g
+                      animate={rightLegAnimation}
+                      transition={legTransition}
+                      style={{ transformOrigin: "156px 220px" }}
+                    >
+                      <ellipse
+                        cx="156"
+                        cy="220"
+                        rx="13"
+                        ry="8.5"
+                        fill="#f7c4c5"
+                        stroke="#be8584"
+                        strokeWidth="2.4"
+                      />
+                      <path
+                        d="M150 223 l-1 3 M155 224 l0 3 M160 223 l1 3"
+                        fill="none"
+                        stroke="#c98d8c"
+                        strokeWidth="1.1"
+                        strokeLinecap="round"
+                      />
+                    </motion.g>
+
+                    {/* head — its own rounded, cheek-heavy shape sitting on the body */}
+                    <path
+                      d="M130 58 C 154 58 176 67 188 84 C 200 101 202 121 196 138 C 189 155 169 166 130 167 C 91 166 71 155 64 138 C 58 121 60 101 72 84 C 84 67 106 58 130 58 Z"
+                      fill="url(#tuneba-fur)"
+                      stroke="#33332f"
+                      strokeWidth="4"
+                    />
+                    <path
+                      d="M112 61 C 119 56 141 56 148 61 C 146 76 143 90 139 102 C 135 96 125 96 121 102 C 117 90 114 76 112 61 Z"
+                      fill="#a9a8a1"
+                      opacity="0.38"
+                    />
+                    <path
+                      d="M102 64 C 91 69 82 78 76 89 C 70 100 68 114 71 126 C 66 112 67 97 74 84 C 82 70 93 63 102 64 Z"
+                      fill="#8f8e87"
+                      opacity="0.18"
+                    />
+                    <path
+                      d="M158 64 C 169 69 178 78 184 89 C 190 100 192 114 189 126 C 194 112 193 97 186 84 C 178 70 167 63 158 64 Z"
+                      fill="#8f8e87"
+                      opacity="0.18"
+                    />
+                    <path
+                      d="M130 58 C 154 58 176 67 188 84 C 200 101 202 121 196 138 C 189 155 169 166 130 167 C 91 166 71 155 64 138 C 58 121 60 101 72 84 C 84 67 106 58 130 58 Z"
+                      fill="url(#tuneba-fur-texture)"
+                      opacity="0.28"
+                    />
+                    <path
+                      d="M103 162 C 114 174 146 174 157 162"
+                      fill="none"
+                      stroke="#8b8a83"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      opacity="0.32"
+                    />
+
+                    {/* cheeks */}
+                    <ellipse cx="91" cy="150" rx="17" ry="11" fill="#f4b9b9" opacity="0.26" />
+                    <ellipse cx="169" cy="150" rx="17" ry="11" fill="#f4b9b9" opacity="0.26" />
+
+                    {/* muzzle */}
+                    <ellipse cx="130" cy="144" rx="33" ry="24" fill="url(#tuneba-muzzle)" />
 
                     {/* eyes */}
                     <motion.g
-                      animate={{ scaleY: eyesClosed ? 0.08 : 1 }}
+                      animate={{ scaleY: eyesClosed ? 0.1 : 1 }}
                       transition={{ duration: 0.12 }}
-                      style={{ transformOrigin: "104px 104px" }}
+                      style={{ transformOrigin: "99px 112px" }}
                     >
-                      <ellipse cx="104" cy="104" rx="12" ry="14" fill="#f3ead6" />
-                      <motion.g
-                        style={sleeping ? { x: 0, y: 0 } : { x: pupilX, y: pupilY }}
-                      >
-                        <circle cx="104" cy="104" r="6" fill="#1b1512" />
-                        <circle cx="102" cy="102" r="2" fill="#fff" />
+                      <ellipse
+                        cx="99"
+                        cy="112"
+                        rx="15"
+                        ry="17"
+                        fill="#5a5952"
+                        opacity="0.18"
+                      />
+                      <motion.g style={sleeping ? { x: 0, y: 0 } : { x: eyeX, y: eyeY }}>
+                        <ellipse cx="99" cy="112" rx="13" ry="15" fill="#171512" />
+                        <circle cx="95" cy="106" r="2.4" fill="#fff" opacity="0.8" />
+                        <circle cx="103" cy="117" r="1.2" fill="#fff" opacity="0.22" />
                       </motion.g>
                     </motion.g>
                     <motion.g
-                      animate={{ scaleY: eyesClosed ? 0.08 : 1 }}
+                      animate={{ scaleY: eyesClosed ? 0.1 : 1 }}
                       transition={{ duration: 0.12 }}
-                      style={{ transformOrigin: "156px 109px" }}
+                      style={{ transformOrigin: "161px 112px" }}
                     >
-                      <ellipse cx="156" cy="109" rx="14" ry="16" fill="#f3ead6" />
-                      <motion.g
-                        style={sleeping ? { x: 0, y: 0 } : { x: pupilX, y: pupilY }}
-                      >
-                        <circle cx="156" cy="109" r="6.5" fill="#1b1512" />
-                        <circle cx="153.5" cy="106.5" r="2" fill="#fff" />
+                      <ellipse
+                        cx="161"
+                        cy="112"
+                        rx="15"
+                        ry="17"
+                        fill="#5a5952"
+                        opacity="0.18"
+                      />
+                      <motion.g style={sleeping ? { x: 0, y: 0 } : { x: eyeX, y: eyeY }}>
+                        <ellipse cx="161" cy="112" rx="13" ry="15" fill="#171512" />
+                        <circle cx="157" cy="106" r="2.4" fill="#fff" opacity="0.8" />
+                        <circle cx="165" cy="117" r="1.2" fill="#fff" opacity="0.22" />
                       </motion.g>
                     </motion.g>
 
-                    {/* brows */}
-                    <path
-                      d="M88 85 Q102 76 117 82"
-                      fill="none"
-                      stroke="#4a4137"
-                      strokeWidth="5"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M143 88 Q156 80 171 88"
-                      fill="none"
-                      stroke="#4a4137"
-                      strokeWidth="5"
-                      strokeLinecap="round"
-                    />
-
-                    {/* nose */}
+                    {/* nose and mouth */}
                     <motion.g
+                      ref={mouthRef}
                       animate={noseAnimation}
                       transition={noseTransition}
-                      style={{ transformOrigin: "130px 158px" }}
+                      style={{ transformOrigin: "130px 147px" }}
                     >
-                      <ellipse cx="130" cy="158" rx="9" ry="7" fill="#d9848b" />
-                      <ellipse cx="127" cy="156" rx="2.5" ry="1.6" fill="#9e5860" />
-                      <ellipse cx="133" cy="156" rx="2.5" ry="1.6" fill="#9e5860" />
-                      <ellipse
-                        cx="126.5"
-                        cy="154.5"
-                        rx="1.5"
-                        ry="1"
-                        fill="#fff"
-                        opacity="0.7"
-                      />
-                    </motion.g>
-
-                    {/* buck teeth */}
-                    <g>
-                      <rect
-                        x="120"
-                        y="166"
-                        width="8.5"
-                        height="15"
-                        rx="2.5"
-                        fill="#f1e6c9"
-                        stroke="#cbb98f"
-                        strokeWidth="1.2"
-                        transform="rotate(-3 124 173)"
-                      />
-                      <rect
-                        x="132"
-                        y="166"
-                        width="8.5"
-                        height="15"
-                        rx="2.5"
-                        fill="#f1e6c9"
-                        stroke="#cbb98f"
-                        strokeWidth="1.2"
-                        transform="rotate(4 136 173)"
-                      />
                       <path
-                        d="M135 168 l-2 6"
-                        stroke="#cbb98f"
-                        strokeWidth="1"
+                        d="M123.4 143 C 125 139.4 135 139.4 136.6 143 C 135.6 148 132.7 150 130 150 C 127.3 150 124.4 148 123.4 143 Z"
+                        fill="#38332f"
+                      />
+                      <ellipse cx="127" cy="142.4" rx="1.3" ry="0.8" fill="#fff" opacity="0.35" />
+                      <path
+                        d="M130 150.2 v3.2 M130 153.4 q-6 3.4 -10 0.4 M130 153.4 q6 3.4 10 0.4"
+                        fill="none"
+                        stroke="#38332f"
+                        strokeWidth="2.2"
                         strokeLinecap="round"
                       />
-                    </g>
+                    </motion.g>
 
                     {/* whiskers */}
                     <g
                       fill="none"
-                      stroke="#ddd2c0"
-                      strokeWidth="1.3"
+                      stroke="#8b897f"
+                      strokeWidth="1.2"
                       strokeLinecap="round"
-                      opacity="0.75"
+                      opacity="0.6"
                     >
-                      <path d="M103 148 Q86 144 68 136" />
-                      <path d="M102 156 Q84 156 64 154" />
-                      <path d="M104 163 Q88 168 70 176" />
-                      <path d="M157 148 Q174 144 192 136" />
-                      <path d="M158 156 Q176 156 196 154" />
-                      <path d="M156 163 Q172 168 190 176" />
+                      <path d="M104 147 Q88 143 76 140" />
+                      <path d="M104 153 Q86 154 74 157" />
+                      <path d="M107 159 Q91 165 81 171" />
+                      <path d="M156 147 Q172 143 184 140" />
+                      <path d="M156 153 Q174 154 186 157" />
+                      <path d="M153 159 Q169 165 179 171" />
                     </g>
 
-                    {/* cheek tufts */}
-                    <path d="M79 133 L62 126 L78 141 Z" fill="#7c7164" />
-                    <path d="M181 133 L198 126 L182 141 Z" fill="#7c7164" />
+                    {/* face fur detail */}
+                    <g
+                      fill="none"
+                      stroke="#8b897f"
+                      strokeWidth="0.9"
+                      strokeLinecap="round"
+                      opacity="0.28"
+                    >
+                      <path d="M70 128 q-5 12 -3 26" />
+                      <path d="M78 120 q-6 16 -4 32" />
+                      <path d="M190 128 q5 12 3 26" />
+                      <path d="M182 120 q6 16 4 32" />
+                      <path d="M106 86 q-8 4 -14 10" />
+                      <path d="M154 86 q8 4 14 10" />
+                    </g>
+                    <g
+                      fill="none"
+                      stroke="#f7f5ef"
+                      strokeWidth="0.9"
+                      strokeLinecap="round"
+                      opacity="0.18"
+                    >
+                      <path d="M86 108 q-8 16 -7 34" />
+                      <path d="M96 92 q-10 12 -13 30" />
+                      <path d="M174 108 q8 16 7 34" />
+                      <path d="M164 92 q10 12 13 30" />
+                    </g>
+
+                    {/* front paws — rendered last so they sit above the head when scratching */}
+                    <motion.g
+                      animate={leftPawAnimation}
+                      transition={leftPawTransition}
+                      style={{ transformOrigin: "73px 177px" }}
+                    >
+                      <ellipse
+                        cx="73"
+                        cy="177"
+                        rx="9"
+                        ry="6.5"
+                        transform="rotate(-14 73 177)"
+                        fill="#f7c4c5"
+                        stroke="#be8584"
+                        strokeWidth="2.2"
+                      />
+                      <path
+                        d="M68 181 l-1 3 M73 182 l0 3 M78 181 l1 3"
+                        fill="none"
+                        stroke="#c98d8c"
+                        strokeWidth="1.1"
+                        strokeLinecap="round"
+                      />
+                    </motion.g>
+                    <motion.g
+                      animate={rightPawAnimation}
+                      transition={rightPawTransition}
+                      style={{ transformOrigin: "187px 177px" }}
+                    >
+                      <ellipse
+                        cx="187"
+                        cy="177"
+                        rx="9"
+                        ry="6.5"
+                        transform="rotate(14 187 177)"
+                        fill="#f7c4c5"
+                        stroke="#be8584"
+                        strokeWidth="2.2"
+                      />
+                      <path
+                        d="M182 181 l-1 3 M187 182 l0 3 M192 181 l1 3"
+                        fill="none"
+                        stroke="#c98d8c"
+                        strokeWidth="1.1"
+                        strokeLinecap="round"
+                      />
+                    </motion.g>
                   </g>
                 </g>
               </motion.svg>
@@ -1095,36 +1360,50 @@ export function Mascot() {
                   className="drop-shadow-[0_8px_10px_rgba(0,0,0,0.32)]"
                 >
                   <defs>
-                    <radialGradient id="lester-meatball" cx="0.35" cy="0.3" r="0.8">
-                      <stop stopColor="#b06b3f" />
-                      <stop offset="1" stopColor="#6e3a22" />
-                    </radialGradient>
+                    <linearGradient
+                      id="tuneba-seed"
+                      x1="12"
+                      y1="6"
+                      x2="33"
+                      y2="40"
+                      gradientUnits="userSpaceOnUse"
+                    >
+                      <stop stopColor="#564a3c" />
+                      <stop offset="0.5" stopColor="#332b23" />
+                      <stop offset="1" stopColor="#191510" />
+                    </linearGradient>
+                    <clipPath id="tuneba-seed-clip">
+                      <path d="M22 4 C 27 8 32 14 34 22 C 36 30 32 37 26 40 C 24 41 20 41 18 40 C 12 37 8 30 10 22 C 12 14 17 8 22 4 Z" />
+                    </clipPath>
                   </defs>
-                  <circle
-                    cx="22"
-                    cy="22"
-                    r="16"
-                    fill="url(#lester-meatball)"
-                    stroke="#4c2818"
-                    strokeWidth="1.4"
-                  />
-                  <g fill="#4c2818" opacity="0.45">
-                    <circle cx="16" cy="17" r="1.7" />
-                    <circle cx="26" cy="15" r="1.3" />
-                    <circle cx="29" cy="25" r="1.8" />
-                    <circle cx="18" cy="28" r="1.4" />
-                    <circle cx="23" cy="22" r="1.1" />
-                    <circle cx="12" cy="23" r="1" />
+                  <g transform="rotate(18 22 22)">
+                    <path
+                      d="M22 4 C 27 8 32 14 34 22 C 36 30 32 37 26 40 C 24 41 20 41 18 40 C 12 37 8 30 10 22 C 12 14 17 8 22 4 Z"
+                      fill="url(#tuneba-seed)"
+                      stroke="#2d241b"
+                      strokeWidth="1.3"
+                    />
+                    <g
+                      clipPath="url(#tuneba-seed-clip)"
+                      fill="none"
+                      stroke="#e8dfcf"
+                      strokeWidth="1.8"
+                      opacity="0.72"
+                    >
+                      <path d="M16 10 C 12 18 12 30 18 39" />
+                      <path d="M22 5 C 19 16 19 29 22 40" />
+                      <path d="M28 10 C 32 19 32 30 26 39" />
+                    </g>
+                    <ellipse
+                      cx="16"
+                      cy="14"
+                      rx="2.6"
+                      ry="4.5"
+                      fill="#fff"
+                      opacity="0.14"
+                      transform="rotate(-22 16 14)"
+                    />
                   </g>
-                  <ellipse
-                    cx="15"
-                    cy="12"
-                    rx="4.5"
-                    ry="3"
-                    fill="#fff"
-                    opacity="0.2"
-                    transform="rotate(-25 15 12)"
-                  />
                 </svg>
               </motion.div>
             </div>
@@ -1132,7 +1411,7 @@ export function Mascot() {
 
           <p className="mt-6 flex items-center gap-2 text-xs text-[var(--font-muted)]">
             <Sparkle size={14} className="text-[var(--accent)]" />
-            Click anywhere to drop a meatball — Lester will walk over and eat it
+            Click anywhere to drop a sunflower seed
           </p>
         </div>
 
@@ -1142,13 +1421,13 @@ export function Mascot() {
               Interactive mascot
             </span>
             <h2 className="mt-3 font-display text-2xl font-bold leading-tight md:text-3xl">
-              An ugly rat with a big appetite.
+              A small gray hamster with a big appetite.
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-[var(--font-muted)]">
-              Lester is not pretty. He is not polite. He is, however, always hungry. Click
-              anywhere in the stage to drop a meatball, then watch him waddle over and eat
-              it. His eyes follow your cursor, unless he is asleep, in which case he does
-              absolutely nothing.
+              Tuneba is not pretty. She is not polite. She is, however, always hungry. Click
+              anywhere in the stage to drop a sunflower seed, then watch her waddle over and
+              eat it. Her eyes follow your cursor, unless she is asleep, in which case she
+              does absolutely nothing.
             </p>
 
             <div className="my-6 hairline" />
@@ -1220,7 +1499,7 @@ export function Mascot() {
           </div>
 
           <p className="px-2 text-xs leading-relaxed text-[var(--font-muted)]">
-            Lester is mostly fur, bad decisions, and an unfillable stomach. His bond meter
+            Tuneba is mostly fur, bad decisions, and an unfillable stomach. His bond meter
             is yours to fill.
           </p>
         </div>
