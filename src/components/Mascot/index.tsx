@@ -1,52 +1,43 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import {
-  Cheese,
-  GameController,
-  HandWaving,
-  Heart,
-  MoonStars,
-  Sparkle,
-} from "@phosphor-icons/react";
+import { Cheese, HandWaving, Heart, MoonStars, Sparkle } from "@phosphor-icons/react";
 import {
   AnimatePresence,
   motion,
   useMotionValue,
   useReducedMotion,
   useSpring,
-  useTransform,
+  useTransform
 } from "framer-motion";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-type Mood = "idle" | "curious" | "happy" | "eating" | "playing" | "sleeping";
-type Reaction = "hello" | "feed" | "play";
+type Mood = "idle" | "curious" | "happy" | "eating" | "drinking" | "sleeping";
+type Reaction = "hello";
+type RatPhase = "idle" | "toSnack" | "eating" | "toWater" | "drinking" | "home";
+
+const DRINK_INTERVAL_MIN = 120_000;
+const DRINK_INTERVAL_MAX = 180_000;
 
 const ACTIONS = [
   {
     id: "hello",
     label: "Say hi",
     hint: "Squeak back",
-    icon: HandWaving,
+    icon: HandWaving
   },
   {
     id: "feed",
     label: "Drop food",
-    hint: "He is always hungry",
-    icon: Cheese,
-  },
-  {
-    id: "play",
-    label: "Play",
-    hint: "Chase the ball",
-    icon: GameController,
+    hint: "He will walk for it",
+    icon: Cheese
   },
   {
     id: "nap",
     label: "Let him nap",
     hint: "Do not disturb",
-    icon: MoonStars,
-  },
+    icon: MoonStars
+  }
 ] as const;
 
 type ActionId = (typeof ACTIONS)[number]["id"];
@@ -66,52 +57,58 @@ const MESSAGES: Record<Reaction, string[]> = {
     "Feed me. Feed me. Feed me.",
     "I'm not fat, I'm fluffy.",
     "Oh, you...",
-  ],
-  feed: [
-    "Finally. A snack.",
-    "You dropped this. It is mine now.",
-    "Didn't you have something stinkier?",
-    "Five-second rule? Never heard of it.",
-    "Cheese! Or whatever this is.",
-    "Mmm, that tastes like some kind of package.",
-    "I'm going to steal your Wi-Fi."
-  ],
-  play: [
     "I will bite. That is the game.",
-    "Faster, human.",
-    "Time to chase the ball.",
-    "Catch me if you can. You cannot.",
-  ],
+    "I'm going to steal your Wi-Fi.",
+  ]
 };
 
-const FOODS = ["🧀", "🍕", "🍪", "🍞", "🍟", "🥕"];
+const SNACK_SIZE = 44;
+
+type Snack = {
+  id: number;
+  x: number;
+  spawnY: number;
+  groundY: number;
+};
+
+type StageBounds = {
+  width: number;
+  groundY: number;
+  ratWidth: number;
+};
 
 const clamp = (value: number, min: number, max: number) =>
   Math.min(max, Math.max(min, value));
 
+const foodWalkDuration = (distance: number, still: boolean) =>
+  still ? 0 : clamp(distance / 260, 0.35, 1.6);
+
 export function Mascot() {
   const reduceMotion = useReducedMotion();
   const stageRef = useRef<HTMLDivElement>(null);
+  const ratRef = useRef<HTMLDivElement>(null);
+  const pipeRef = useRef<HTMLDivElement>(null);
 
   const [mood, setMood] = useState<Mood>("idle");
   const [blink, setBlink] = useState(false);
   const [sleeping, setSleeping] = useState(false);
   const [bond, setBond] = useState(1);
-  const [speech, setSpeech] = useState({
-    text: "I'm Lester. Move your cursor — I'll follow. Click me to drop food.",
-    id: 0,
+  const [snack, setSnack] = useState<Snack | null>(null);
+  const [ratPhase, setRatPhase] = useState<RatPhase>("idle");
+  const [walkX, setWalkX] = useState(0);
+  const [speech, setSpeech] = useState<{
+    text: string;
+    id: number;
+  } | null>({
+    text: "I'm Lester. Move your cursor — I'll follow. Click anywhere and I'll come running.",
+    id: 0
   });
-  const [particles, setParticles] = useState<
-    Array<{ id: number; emoji: string; x: number; rotate: number }>
-  >([]);
-  const [fallingFood, setFallingFood] = useState<
-    Array<{ id: number; emoji: string; x: number }>
-  >([]);
-
   const moodTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sleepTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const particleId = useRef(0);
-  const foodId = useRef(0);
+  const waterTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const startWaterTripRef = useRef<() => void>(() => {});
+  const snackId = useRef(0);
+  const walkedDistance = useRef(0);
   const speechId = useRef(0);
 
   const pointerX = useMotionValue(0);
@@ -120,25 +117,21 @@ export function Mascot() {
   const pupilX = useSpring(useTransform(pointerX, [-1, 1], [-6, 6]), {
     stiffness: 180,
     damping: 20,
-    mass: 0.4,
+    mass: 0.4
   });
   const pupilY = useSpring(useTransform(pointerY, [-1, 1], [-5, 5]), {
     stiffness: 180,
     damping: 20,
-    mass: 0.4,
+    mass: 0.4
   });
-  const lean = useSpring(useTransform(pointerX, [-1, 1], [-2.5, 2.5]), {
-    stiffness: 120,
-    damping: 18,
-  });
-  const shift = useSpring(useTransform(pointerX, [-1, 1], [-4, 4]), {
-    stiffness: 120,
-    damping: 18,
-  });
-
   const say = useCallback((text: string) => {
     speechId.current += 1;
     setSpeech({ text, id: speechId.current });
+  }, []);
+
+  const clearSpeech = useCallback(() => {
+    speechId.current += 1;
+    setSpeech(null);
   }, []);
 
   const scheduleSleep = useCallback(() => {
@@ -146,9 +139,8 @@ export function Mascot() {
     sleepTimer.current = setTimeout(() => {
       setSleeping(true);
       setMood("sleeping");
-      say("Zzz… wake me when the food lands.");
     }, 30000);
-  }, [say]);
+  }, []);
 
   useEffect(() => {
     scheduleSleep();
@@ -222,9 +214,7 @@ export function Mascot() {
     setSleeping(false);
     scheduleSleep();
 
-    setMood(
-      action === "feed" ? "eating" : action === "play" ? "playing" : "happy"
-    );
+    setMood("happy");
 
     if (wasAsleep) {
       say("Oh! I was dreaming about cheese.");
@@ -238,42 +228,212 @@ export function Mascot() {
     setBond((current) => Math.min(5, current + 1));
 
     if (moodTimer.current) clearTimeout(moodTimer.current);
-    moodTimer.current = setTimeout(
-      () => setMood("idle"),
-      action === "feed" ? 2300 : 1800
+    moodTimer.current = setTimeout(() => setMood("idle"), 1800);
+  };
+
+  const measureStage = useCallback((): StageBounds | null => {
+    const stage = stageRef.current;
+    const rat = ratRef.current;
+    if (!stage || !rat) return null;
+
+    const stageRect = stage.getBoundingClientRect();
+    const ratRect = rat.getBoundingClientRect();
+
+    return {
+      width: stageRect.width,
+      groundY: Math.min(
+        stageRect.height - SNACK_SIZE - 8,
+        ratRect.top - stageRect.top + ratRect.height * 0.93
+      ),
+      ratWidth: ratRect.width
+    };
+  }, []);
+
+  const beginSnackWalk = useCallback(
+    (target: Snack) => {
+      const bounds = measureStage();
+      if (!bounds) return;
+
+      const maxOffset = Math.max(0, bounds.width / 2 - bounds.ratWidth / 2 - 8);
+      const targetX = clamp(target.x - bounds.width / 2, -maxOffset, maxOffset);
+
+      walkedDistance.current = Math.abs(targetX);
+      setWalkX(targetX);
+      setRatPhase("toSnack");
+    },
+    [measureStage]
+  );
+
+  const scheduleNextDrink = useCallback((delay?: number) => {
+    if (waterTimer.current) clearTimeout(waterTimer.current);
+
+    waterTimer.current = setTimeout(
+      () => startWaterTripRef.current(),
+      delay ??
+        DRINK_INTERVAL_MIN + Math.random() * (DRINK_INTERVAL_MAX - DRINK_INTERVAL_MIN)
     );
+  }, []);
+
+  const startWaterTrip = useCallback(() => {
+    if (ratPhase !== "idle" || snack) {
+      scheduleNextDrink(15_000);
+      return;
+    }
+
+    const stage = stageRef.current;
+    const pipe = pipeRef.current;
+    const bounds = measureStage();
+    if (!stage || !pipe || !bounds) {
+      scheduleNextDrink(15_000);
+      return;
+    }
+
+    const stageRect = stage.getBoundingClientRect();
+    const pipeRect = pipe.getBoundingClientRect();
+    const maxOffset = Math.max(0, bounds.width / 2 - bounds.ratWidth / 2 - 8);
+    const spoutX = pipeRect.left - stageRect.left + pipeRect.width * 0.82;
+    const targetX = clamp(spoutX - bounds.width / 2, -maxOffset, maxOffset);
+
+    setSleeping(false);
+    scheduleSleep();
+    clearSpeech();
+    if (moodTimer.current) clearTimeout(moodTimer.current);
+    setMood("idle");
+
+    walkedDistance.current = Math.abs(targetX);
+    setWalkX(targetX);
+    setRatPhase("toWater");
+  }, [clearSpeech, measureStage, ratPhase, scheduleNextDrink, scheduleSleep, snack]);
+
+  startWaterTripRef.current = startWaterTrip;
+
+  useEffect(() => {
+    scheduleNextDrink();
+
+    return () => {
+      if (waterTimer.current) clearTimeout(waterTimer.current);
+    };
+  }, [scheduleNextDrink]);
+
+  const dropSnackAt = (x: number, y: number) => {
+    if (snack || ratPhase !== "idle") return;
+
+    const bounds = measureStage();
+    if (!bounds) return;
+
+    setSleeping(false);
+    scheduleSleep();
+    clearSpeech();
+    if (moodTimer.current) clearTimeout(moodTimer.current);
+    setMood("idle");
+
+    snackId.current += 1;
+    setSnack({
+      id: snackId.current,
+      x: clamp(x, SNACK_SIZE / 2 + 6, bounds.width - SNACK_SIZE / 2 - 6),
+      spawnY: clamp(y, 8, bounds.groundY - SNACK_SIZE),
+      groundY: bounds.groundY
+    });
   };
 
-  const dropFood = () => {
-    foodId.current += 1;
-    setFallingFood((current) => [
-      ...current,
-      {
-        id: foodId.current,
-        emoji: FOODS[Math.floor(Math.random() * FOODS.length)],
-        x: (Math.random() - 0.5) * 140,
-      },
-    ]);
+  const dropSnackRandomly = () => {
+    const bounds = measureStage();
+    if (!bounds) return;
+
+    dropSnackAt(bounds.width * (0.2 + Math.random() * 0.6), bounds.groundY * 0.25);
   };
 
-  const handleFoodLanded = (id: number) => {
-    setFallingFood((current) => current.filter((food) => food.id !== id));
-    react("feed");
+  const handleStagePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    const rect = stage.getBoundingClientRect();
+    dropSnackAt(event.clientX - rect.left, event.clientY - rect.top);
   };
+
+  const handleSnackLanded = () => {
+    if (!snack) return;
+    beginSnackWalk(snack);
+  };
+
+  useEffect(() => {
+    if (ratPhase === "toSnack") {
+      const timer = setTimeout(
+        () => {
+          setRatPhase("eating");
+          setMood("eating");
+          setBond((current) => Math.min(5, current + 1));
+          if (moodTimer.current) clearTimeout(moodTimer.current);
+        },
+        foodWalkDuration(walkedDistance.current, Boolean(reduceMotion)) * 1000 + 80
+      );
+
+      return () => clearTimeout(timer);
+    }
+
+    if (ratPhase === "eating") {
+      const timer = setTimeout(() => {
+        setSnack(null);
+        setMood("idle");
+        setRatPhase("home");
+        setWalkX(0);
+      }, 900);
+
+      return () => clearTimeout(timer);
+    }
+
+    if (ratPhase === "toWater") {
+      const timer = setTimeout(
+        () => {
+          setRatPhase("drinking");
+          setMood("drinking");
+          if (moodTimer.current) clearTimeout(moodTimer.current);
+        },
+        foodWalkDuration(walkedDistance.current, Boolean(reduceMotion)) * 1000 + 80
+      );
+
+      return () => clearTimeout(timer);
+    }
+
+    if (ratPhase === "drinking") {
+      const timer = setTimeout(() => {
+        setMood("idle");
+        setRatPhase("home");
+        setWalkX(0);
+        scheduleNextDrink();
+      }, 2600);
+
+      return () => clearTimeout(timer);
+    }
+
+    if (ratPhase === "home") {
+      const timer = setTimeout(
+        () => {
+          setRatPhase("idle");
+          walkedDistance.current = 0;
+        },
+        foodWalkDuration(walkedDistance.current, Boolean(reduceMotion)) * 1000 + 80
+      );
+
+      return () => clearTimeout(timer);
+    }
+  }, [ratPhase, reduceMotion, scheduleNextDrink]);
 
   const nap = () => {
     if (sleepTimer.current) clearTimeout(sleepTimer.current);
     if (moodTimer.current) clearTimeout(moodTimer.current);
-    setParticles([]);
-    setFallingFood([]);
+    setSnack(null);
+    setRatPhase("idle");
+    setWalkX(0);
+    walkedDistance.current = 0;
     setSleeping(true);
     setMood("sleeping");
-    say("Wake me when the food lands.");
+    clearSpeech();
   };
 
   const handleAction = (action: ActionId) => {
     if (action === "feed") {
-      dropFood();
+      dropSnackRandomly();
       return;
     }
 
@@ -286,46 +446,61 @@ export function Mascot() {
   };
 
   const eyesClosed = sleeping || blink;
-  const paused = Boolean(reduceMotion);
-  const still = paused || sleeping;
+  const still = Boolean(reduceMotion) || sleeping;
 
-  const mascotAnimation = still
-    ? { y: 0 }
+  const noseAnimation = still
+    ? { x: 0, y: 0, scaleX: 1 }
     : mood === "happy"
-      ? { y: [0, -22, 0, -8, 0], scaleY: [1, 1.04, 0.97, 1.02, 1] }
+      ? {
+          x: [0, -1.5, 1.5, -1, 0],
+          y: [0, -0.8, 0.8, 0],
+          scaleX: [1, 1.04, 0.98, 1]
+        }
       : mood === "eating"
-        ? { y: 0, scaleY: [1, 1.05, 0.96, 1], scaleX: [1, 0.97, 1.03, 1] }
-        : mood === "playing"
-          ? { y: [0, -12, 0], rotate: [0, -3, 3, 0] }
-          : { y: [0, -5, 0] };
+        ? {
+            x: [0, -2, 2, -2, 0],
+            y: [0, 0.6, -0.6, 0],
+            scaleX: [1, 1.08, 0.96, 1.04, 1]
+          }
+        : { x: 0, y: [0, -0.8, 0], scaleX: 1 };
 
-  const mascotTransition = still
+  const noseTransition = still
     ? { duration: 0 }
     : mood === "happy"
-      ? { duration: 0.85, ease: "easeOut" as const }
+      ? { duration: 0.55, repeat: 2, ease: "easeInOut" as const }
       : mood === "eating"
-        ? { duration: 0.45, repeat: 2, repeatType: "reverse" as const }
-        : mood === "playing"
-          ? { duration: 0.7, ease: "easeOut" as const }
-          : { duration: 4, repeat: Infinity, ease: "easeInOut" as const };
+        ? { duration: 0.4, repeat: 3, ease: "easeInOut" as const }
+        : { duration: 3.2, repeat: Infinity, ease: "easeInOut" as const };
 
-  const bodyStyle = sleeping
-    ? { transformOrigin: "130px 150px" }
-    : {
-        rotate: lean,
-        x: shift,
-        transformOrigin: "130px 150px",
-      };
+  const walking = ratPhase === "toSnack" || ratPhase === "toWater" || ratPhase === "home";
+  const drinking = ratPhase === "drinking";
+  const walkDuration =
+    ratPhase === "home"
+      ? foodWalkDuration(walkedDistance.current, Boolean(reduceMotion))
+      : foodWalkDuration(Math.abs(walkX), Boolean(reduceMotion));
 
   const status = sleeping
-    ? "Asleep — drop food to wake him"
-    : mood === "eating"
-      ? "Devouring the evidence"
-      : mood === "playing"
-        ? "Biting everything in sight"
-        : mood === "happy"
-          ? "Suspiciously pleased"
-          : "Watching you (for snacks)";
+    ? "Asleep — drop a meatball to wake him"
+    : ratPhase === "toSnack"
+      ? "Walking to the snack"
+      : ratPhase === "eating"
+        ? "Eating the meatball"
+        : ratPhase === "toWater"
+          ? "Heading to the water pipe"
+          : ratPhase === "drinking"
+            ? "Drinking water"
+            : ratPhase === "home"
+              ? "Waddling back home"
+              : mood === "happy"
+                ? "Suspiciously pleased"
+                : "Watching you (for snacks)";
+
+  // State-driven messages replace the sticky speech bubble while he is busy.
+  const message = sleeping
+    ? { text: "Zzz… wake me when the food lands.", id: -1 }
+    : ratPhase !== "idle"
+      ? null
+      : speech;
 
   return (
     <section className="pt-16 md:pt-24">
@@ -341,7 +516,8 @@ export function Mascot() {
       <div className="grid items-stretch gap-5 lg:grid-cols-[1.05fr_0.95fr]">
         <div
           ref={stageRef}
-          className="relative flex min-h-[470px] flex-col items-center justify-center overflow-hidden rounded-[2rem] border border-[var(--border-color)] bg-[var(--layer-100)] px-6 py-10"
+          onPointerDown={handleStagePointerDown}
+          className="relative flex min-h-[470px] cursor-crosshair flex-col items-center justify-center overflow-hidden rounded-[2rem] border border-[var(--border-color)] bg-[var(--layer-100)] px-6 py-10"
         >
           <div
             aria-hidden
@@ -350,10 +526,9 @@ export function Mascot() {
               backgroundImage:
                 "radial-gradient(circle, var(--font-color) 1px, transparent 1px)",
               backgroundSize: "22px 22px",
-              maskImage:
-                "radial-gradient(ellipse at center, black 20%, transparent 72%)",
+              maskImage: "radial-gradient(ellipse at center, black 20%, transparent 72%)",
               WebkitMaskImage:
-                "radial-gradient(ellipse at center, black 20%, transparent 72%)",
+                "radial-gradient(ellipse at center, black 20%, transparent 72%)"
             }}
           />
           <div
@@ -367,28 +542,224 @@ export function Mascot() {
 
           <div className="pointer-events-none absolute inset-x-4 top-5 z-10 flex justify-center">
             <AnimatePresence mode="wait">
-              <motion.div
-                key={speech.id}
-                initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: -6, scale: 0.98 }}
-                transition={{ duration: 0.22 }}
-                className="relative max-w-[320px] rounded-2xl border border-[var(--border-color)] bg-[var(--layer-200)] px-4 py-3 text-center text-sm text-[var(--font-color)] shadow-[var(--shadow-card)]"
-              >
-                {speech.text}
-                <span
-                  aria-hidden
-                  className="absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 border-b border-r border-[var(--border-color)] bg-[var(--layer-200)]"
-                />
-              </motion.div>
+              {message && (
+                <motion.div
+                  key={message.id}
+                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -6, scale: 0.98 }}
+                  transition={{ duration: 0.22 }}
+                  className="relative max-w-[320px] rounded-2xl border border-[var(--border-color)] bg-[var(--layer-200)] px-4 py-3 text-center text-sm text-[var(--font-color)] shadow-[var(--shadow-card)]"
+                >
+                  {message.text}
+                  <span
+                    aria-hidden
+                    className="absolute -bottom-1.5 left-1/2 h-3 w-3 -translate-x-1/2 rotate-45 border-b border-r border-[var(--border-color)] bg-[var(--layer-200)]"
+                  />
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
 
           <span className="sr-only" role="status" aria-live="polite">
-            {speech.text}
+            {message?.text ?? ""}
           </span>
 
-          <div className="relative mt-10">
+          <div
+            ref={pipeRef}
+            aria-hidden
+            className="pointer-events-none absolute bottom-[36%] left-[8%] z-10 h-[155px] w-[120px]"
+          >
+            <svg
+              viewBox="0 0 120 155"
+              className="h-full w-full drop-shadow-[0_10px_14px_rgba(0,0,0,0.25)]"
+            >
+              <defs>
+                <linearGradient
+                  id="lester-bottle"
+                  x1="28"
+                  y1="0"
+                  x2="76"
+                  y2="0"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stopColor="#d9eef7" />
+                  <stop offset="0.5" stopColor="#9ed0e2" />
+                  <stop offset="1" stopColor="#6aa8c0" />
+                </linearGradient>
+                <linearGradient
+                  id="lester-bottle-water"
+                  x1="0"
+                  y1="58"
+                  x2="0"
+                  y2="118"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stopColor="#7cc7e1" />
+                  <stop offset="1" stopColor="#3d8cad" />
+                </linearGradient>
+                <linearGradient
+                  id="lester-bottle-tube"
+                  x1="50"
+                  y1="108"
+                  x2="100"
+                  y2="140"
+                  gradientUnits="userSpaceOnUse"
+                >
+                  <stop stopColor="#d4dde1" />
+                  <stop offset="0.55" stopColor="#8e9ba2" />
+                  <stop offset="1" stopColor="#5f6b71" />
+                </linearGradient>
+              </defs>
+
+              {/* wall mount and bottle band */}
+              <rect
+                x="0"
+                y="18"
+                width="9"
+                height="40"
+                rx="4.5"
+                fill="#a7b1b7"
+                opacity="0.55"
+              />
+              <rect
+                x="0"
+                y="18"
+                width="9"
+                height="40"
+                rx="4.5"
+                fill="none"
+                stroke="#707a80"
+                strokeWidth="1"
+                opacity="0.5"
+              />
+              <rect
+                x="2"
+                y="30"
+                width="26"
+                height="7"
+                rx="3.5"
+                fill="#8d989e"
+                stroke="#606a70"
+                strokeWidth="1"
+              />
+              <rect
+                x="24"
+                y="26"
+                width="56"
+                height="9"
+                rx="4.5"
+                fill="#9aa5ab"
+                stroke="#606a70"
+                strokeWidth="1"
+              />
+
+              {/* bottle body */}
+              <rect
+                x="28"
+                y="10"
+                width="48"
+                height="90"
+                rx="16"
+                fill="url(#lester-bottle)"
+                stroke="#4b7f96"
+                strokeWidth="1.4"
+              />
+              <path
+                d="M31 56 q10 -5 21 0 t21 0 v36 a13 13 0 0 1 -13 13 h-16 a13 13 0 0 1 -13 -13 Z"
+                fill="url(#lester-bottle-water)"
+                opacity="0.85"
+              />
+              <rect
+                x="35"
+                y="16"
+                width="7"
+                height="64"
+                rx="3.5"
+                fill="#fff"
+                opacity="0.3"
+              />
+
+              {/* cap and metal sipper tube */}
+              <rect
+                x="32"
+                y="94"
+                width="40"
+                height="16"
+                rx="5"
+                fill="#4f7d92"
+                stroke="#355b6b"
+                strokeWidth="1.2"
+              />
+              <path
+                d="M52 110 C 52 128, 74 132, 96 138"
+                fill="none"
+                stroke="url(#lester-bottle-tube)"
+                strokeWidth="7"
+                strokeLinecap="round"
+              />
+              <circle
+                cx="99"
+                cy="140"
+                r="6"
+                fill="#c3cdd2"
+                stroke="#6f7c83"
+                strokeWidth="1.2"
+              />
+
+              {drinking && (
+                <>
+                  <motion.circle
+                    cx="99"
+                    cy="148"
+                    r="2.2"
+                    fill="#8fd8ef"
+                    animate={{ cy: [148, 160], opacity: [0, 1, 0] }}
+                    transition={{
+                      duration: 0.6,
+                      repeat: Infinity,
+                      ease: "easeIn"
+                    }}
+                  />
+                  <motion.circle
+                    cx="96"
+                    cy="146"
+                    r="1.4"
+                    fill="#8fd8ef"
+                    animate={{ cy: [146, 158], opacity: [0, 1, 0] }}
+                    transition={{
+                      duration: 0.8,
+                      repeat: Infinity,
+                      ease: "easeIn",
+                      delay: 0.2
+                    }}
+                  />
+                </>
+              )}
+            </svg>
+          </div>
+
+          <motion.div
+            className="relative z-[8] mt-10"
+            animate={{
+              x: walkX,
+              y: drinking ? [0, 2, 0] : walking ? [0, -3, 0] : 0,
+              rotate: drinking ? (walkX < 0 ? -7 : 7) : walking ? [0, -1, 1, 0] : 0
+            }}
+            transition={{
+              x: { duration: walkDuration, ease: "easeInOut" },
+              y: drinking
+                ? { duration: 0.8, repeat: Infinity, ease: "easeInOut" }
+                : walking
+                  ? { duration: 0.32, repeat: Infinity, ease: "easeInOut" }
+                  : { duration: 0.2 },
+              rotate: drinking
+                ? { duration: 0.35, ease: "easeOut" }
+                : walking
+                  ? { duration: 0.64, repeat: Infinity, ease: "easeInOut" }
+                  : { duration: 0.2 }
+            }}
+          >
             {sleeping && (
               <span
                 aria-hidden
@@ -398,12 +769,9 @@ export function Mascot() {
               </span>
             )}
 
-            <motion.button
-              type="button"
-              onClick={dropFood}
-              aria-label="Drop food for Lester, the mascot"
-              className="relative block w-[248px] cursor-pointer rounded-full outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-8 focus-visible:ring-offset-[var(--layer-100)] sm:w-[292px]"
-              whileTap={paused ? undefined : { scale: 0.97 }}
+            <div
+              ref={ratRef}
+              className="relative block w-[248px] select-none sm:w-[292px]"
             >
               <motion.svg
                 viewBox="0 0 260 260"
@@ -447,35 +815,12 @@ export function Mascot() {
                   </linearGradient>
                 </defs>
 
-                <ellipse
-                  cx="130"
-                  cy="232"
-                  rx="58"
-                  ry="9"
-                  fill="#000"
-                  opacity="0.32"
-                />
+                <ellipse cx="130" cy="232" rx="58" ry="9" fill="#000" opacity="0.32" />
 
-                <motion.g
-                  animate={mascotAnimation}
-                  transition={mascotTransition}
-                  style={{ transformOrigin: "130px 150px" }}
-                >
-                  <motion.g style={bodyStyle}>
+                <g>
+                  <g>
                     {/* tail */}
-                    <motion.g
-                      animate={still ? { rotate: 0 } : { rotate: [-2, 2, -2] }}
-                      transition={
-                        still
-                          ? { duration: 0 }
-                          : {
-                              duration: 3.8,
-                              repeat: Infinity,
-                              ease: "easeInOut",
-                            }
-                      }
-                      style={{ transformOrigin: "188px 198px" }}
-                    >
+                    <g>
                       <path
                         d="M188 198 C 224 202 240 178 226 158 C 216 144 198 148 200 162"
                         fill="none"
@@ -483,7 +828,7 @@ export function Mascot() {
                         strokeWidth="7"
                         strokeLinecap="round"
                       />
-                    </motion.g>
+                    </g>
 
                     {/* feet */}
                     <ellipse cx="103" cy="218" rx="18" ry="8" fill="#d98a8f" />
@@ -510,22 +855,13 @@ export function Mascot() {
                     />
 
                     {/* scruffy body tufts */}
-                    <path
-                      d="M65 143 L48 135 L63 152 L46 157 L65 164 Z"
-                      fill="#7c7164"
-                    />
+                    <path d="M65 143 L48 135 L63 152 L46 157 L65 164 Z" fill="#7c7164" />
                     <path
                       d="M195 148 L212 140 L197 156 L214 162 L195 168 Z"
                       fill="#7c7164"
                     />
-                    <path
-                      d="M76 188 L62 194 L78 198 Z"
-                      fill="#7c7164"
-                    />
-                    <path
-                      d="M184 188 L198 194 L182 198 Z"
-                      fill="#7c7164"
-                    />
+                    <path d="M76 188 L62 194 L78 198 Z" fill="#7c7164" />
+                    <path d="M184 188 L198 194 L182 198 Z" fill="#7c7164" />
 
                     {/* arms */}
                     <path
@@ -543,21 +879,7 @@ export function Mascot() {
                       strokeLinecap="round"
                     />
 
-                    <motion.g
-                      animate={
-                        still
-                          ? { rotate: 0 }
-                          : mood === "happy" || mood === "playing"
-                            ? { rotate: [0, -24, 10, -24, 0] }
-                            : { rotate: 0 }
-                      }
-                      transition={
-                        still
-                          ? { duration: 0 }
-                          : { duration: 0.9, ease: "easeInOut" }
-                      }
-                      style={{ transformOrigin: "182px 158px" }}
-                    >
+                    <g>
                       <path
                         d="M182 158 Q200 164 196 178"
                         fill="none"
@@ -565,31 +887,19 @@ export function Mascot() {
                         strokeWidth="13"
                         strokeLinecap="round"
                       />
-                      <ellipse
-                        cx="196"
-                        cy="181"
-                        rx="10"
-                        ry="8"
-                        fill="#c9bdac"
-                      />
+                      <ellipse cx="196" cy="181" rx="10" ry="8" fill="#c9bdac" />
                       <path
                         d="M189 184 l4 5 M194 187 l2 6 M200 187 l-1 6"
                         stroke="#8a7e6e"
                         strokeWidth="1.6"
                         strokeLinecap="round"
                       />
-                    </motion.g>
+                    </g>
 
                     {/* ears */}
                     <g>
                       <circle cx="82" cy="65" r="28" fill="url(#lester-fur)" />
-                      <ellipse
-                        cx="82"
-                        cy="65"
-                        rx="17"
-                        ry="16"
-                        fill="url(#lester-ear)"
-                      />
+                      <ellipse cx="82" cy="65" rx="17" ry="16" fill="url(#lester-ear)" />
                       <path
                         d="M74 58 q6 -5 12 0 M72 70 q5 -4 10 0"
                         fill="none"
@@ -599,35 +909,9 @@ export function Mascot() {
                         opacity="0.7"
                       />
                     </g>
-                    <motion.g
-                      animate={
-                        still
-                          ? { rotate: 8 }
-                          : mood === "happy" || mood === "playing"
-                            ? { rotate: [8, 2, 14, 8] }
-                            : { rotate: 8 }
-                      }
-                      transition={
-                        still
-                          ? { duration: 0 }
-                          : { duration: 1.4, ease: "easeInOut" }
-                      }
-                      style={{ transformOrigin: "160px 84px" }}
-                    >
-                      <ellipse
-                        cx="181"
-                        cy="61"
-                        rx="33"
-                        ry="30"
-                        fill="url(#lester-fur)"
-                      />
-                      <ellipse
-                        cx="181"
-                        cy="61"
-                        rx="21"
-                        ry="18"
-                        fill="url(#lester-ear)"
-                      />
+                    <g transform="rotate(8 160 84)">
+                      <ellipse cx="181" cy="61" rx="33" ry="30" fill="url(#lester-fur)" />
+                      <ellipse cx="181" cy="61" rx="21" ry="18" fill="url(#lester-ear)" />
                       <path
                         d="M166 50 q8 -6 16 0 M164 66 q9 -6 18 0"
                         fill="none"
@@ -636,7 +920,7 @@ export function Mascot() {
                         strokeLinecap="round"
                         opacity="0.7"
                       />
-                    </motion.g>
+                    </g>
 
                     {/* head */}
                     <path
@@ -654,13 +938,7 @@ export function Mascot() {
                     />
 
                     {/* muzzle */}
-                    <ellipse
-                      cx="130"
-                      cy="150"
-                      rx="33"
-                      ry="31"
-                      fill="#c9bdac"
-                    />
+                    <ellipse cx="130" cy="150" rx="33" ry="31" fill="#c9bdac" />
 
                     {/* eye patch */}
                     <path
@@ -675,17 +953,9 @@ export function Mascot() {
                       transition={{ duration: 0.12 }}
                       style={{ transformOrigin: "104px 104px" }}
                     >
-                      <ellipse
-                        cx="104"
-                        cy="104"
-                        rx="12"
-                        ry="14"
-                        fill="#f3ead6"
-                      />
+                      <ellipse cx="104" cy="104" rx="12" ry="14" fill="#f3ead6" />
                       <motion.g
-                        style={
-                          sleeping ? { x: 0, y: 0 } : { x: pupilX, y: pupilY }
-                        }
+                        style={sleeping ? { x: 0, y: 0 } : { x: pupilX, y: pupilY }}
                       >
                         <circle cx="104" cy="104" r="6" fill="#1b1512" />
                         <circle cx="102" cy="102" r="2" fill="#fff" />
@@ -696,17 +966,9 @@ export function Mascot() {
                       transition={{ duration: 0.12 }}
                       style={{ transformOrigin: "156px 109px" }}
                     >
-                      <ellipse
-                        cx="156"
-                        cy="109"
-                        rx="14"
-                        ry="16"
-                        fill="#f3ead6"
-                      />
+                      <ellipse cx="156" cy="109" rx="14" ry="16" fill="#f3ead6" />
                       <motion.g
-                        style={
-                          sleeping ? { x: 0, y: 0 } : { x: pupilX, y: pupilY }
-                        }
+                        style={sleeping ? { x: 0, y: 0 } : { x: pupilX, y: pupilY }}
                       >
                         <circle cx="156" cy="109" r="6.5" fill="#1b1512" />
                         <circle cx="153.5" cy="106.5" r="2" fill="#fff" />
@@ -730,10 +992,23 @@ export function Mascot() {
                     />
 
                     {/* nose */}
-                    <ellipse cx="130" cy="158" rx="9" ry="7" fill="#d9848b" />
-                    <ellipse cx="127" cy="156" rx="2.5" ry="1.6" fill="#9e5860" />
-                    <ellipse cx="133" cy="156" rx="2.5" ry="1.6" fill="#9e5860" />
-                    <ellipse cx="126.5" cy="154.5" rx="1.5" ry="1" fill="#fff" opacity="0.7" />
+                    <motion.g
+                      animate={noseAnimation}
+                      transition={noseTransition}
+                      style={{ transformOrigin: "130px 158px" }}
+                    >
+                      <ellipse cx="130" cy="158" rx="9" ry="7" fill="#d9848b" />
+                      <ellipse cx="127" cy="156" rx="2.5" ry="1.6" fill="#9e5860" />
+                      <ellipse cx="133" cy="156" rx="2.5" ry="1.6" fill="#9e5860" />
+                      <ellipse
+                        cx="126.5"
+                        cy="154.5"
+                        rx="1.5"
+                        ry="1"
+                        fill="#fff"
+                        opacity="0.7"
+                      />
+                    </motion.g>
 
                     {/* buck teeth */}
                     <g>
@@ -786,61 +1061,78 @@ export function Mascot() {
                     {/* cheek tufts */}
                     <path d="M79 133 L62 126 L78 141 Z" fill="#7c7164" />
                     <path d="M181 133 L198 126 L182 141 Z" fill="#7c7164" />
-                  </motion.g>
-                </motion.g>
+                  </g>
+                </g>
               </motion.svg>
-            </motion.button>
+            </div>
+          </motion.div>
 
-            <div className="pointer-events-none absolute inset-0 z-10">
-              {fallingFood.map((food) => (
-                <motion.span
-                  key={food.id}
-                  aria-hidden
-                  initial={{ y: -70, opacity: 0, rotate: -25 }}
-                  animate={{ y: 178, opacity: [0, 1, 1], rotate: 18 }}
-                  transition={{ duration: 0.55, ease: "easeIn" }}
-                  onAnimationComplete={() => handleFoodLanded(food.id)}
-                  className="absolute left-1/2 top-0 select-none text-3xl"
-                  style={{ marginLeft: food.x }}
+          {snack && (
+            <div
+              aria-hidden
+              className="pointer-events-none absolute z-20 -translate-x-1/2 select-none"
+              style={{ left: snack.x, top: snack.groundY }}
+            >
+              <motion.div
+                key={snack.id}
+                initial={{
+                  y: snack.spawnY - snack.groundY,
+                  opacity: 0,
+                  rotate: -18,
+                  scale: 0.9
+                }}
+                animate={{ y: -SNACK_SIZE, opacity: 1, rotate: 0, scale: 1 }}
+                transition={{
+                  duration: reduceMotion ? 0 : 0.55,
+                  ease: "easeIn"
+                }}
+                onAnimationComplete={handleSnackLanded}
+              >
+                <svg
+                  viewBox="0 0 44 44"
+                  width={SNACK_SIZE}
+                  height={SNACK_SIZE}
+                  className="drop-shadow-[0_8px_10px_rgba(0,0,0,0.32)]"
                 >
-                  {food.emoji}
-                </motion.span>
-              ))}
+                  <defs>
+                    <radialGradient id="lester-meatball" cx="0.35" cy="0.3" r="0.8">
+                      <stop stopColor="#b06b3f" />
+                      <stop offset="1" stopColor="#6e3a22" />
+                    </radialGradient>
+                  </defs>
+                  <circle
+                    cx="22"
+                    cy="22"
+                    r="16"
+                    fill="url(#lester-meatball)"
+                    stroke="#4c2818"
+                    strokeWidth="1.4"
+                  />
+                  <g fill="#4c2818" opacity="0.45">
+                    <circle cx="16" cy="17" r="1.7" />
+                    <circle cx="26" cy="15" r="1.3" />
+                    <circle cx="29" cy="25" r="1.8" />
+                    <circle cx="18" cy="28" r="1.4" />
+                    <circle cx="23" cy="22" r="1.1" />
+                    <circle cx="12" cy="23" r="1" />
+                  </g>
+                  <ellipse
+                    cx="15"
+                    cy="12"
+                    rx="4.5"
+                    ry="3"
+                    fill="#fff"
+                    opacity="0.2"
+                    transform="rotate(-25 15 12)"
+                  />
+                </svg>
+              </motion.div>
             </div>
-
-            <div className="pointer-events-none absolute inset-0">
-              <AnimatePresence>
-                {particles.map((particle) => (
-                  <motion.span
-                    key={particle.id}
-                    aria-hidden
-                    initial={{ opacity: 0, y: 0, x: 0, scale: 0.6 }}
-                    animate={{
-                      opacity: [0, 1, 1, 0],
-                      y: -100,
-                      x: particle.x,
-                      scale: [0.6, 1.1, 0.9],
-                      rotate: particle.rotate,
-                    }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 1.15, ease: "easeOut" }}
-                    onAnimationComplete={() =>
-                      setParticles((current) =>
-                        current.filter((item) => item.id !== particle.id)
-                      )
-                    }
-                    className="absolute left-1/2 top-[42%] select-none text-2xl"
-                  >
-                    {particle.emoji}
-                  </motion.span>
-                ))}
-              </AnimatePresence>
-            </div>
-          </div>
+          )}
 
           <p className="mt-6 flex items-center gap-2 text-xs text-[var(--font-muted)]">
             <Sparkle size={14} className="text-[var(--accent)]" />
-            Click Lester to drop some food
+            Click anywhere to drop a meatball — Lester will walk over and eat it
           </p>
         </div>
 
@@ -853,10 +1145,10 @@ export function Mascot() {
               An ugly rat with a big appetite.
             </h2>
             <p className="mt-4 text-sm leading-relaxed text-[var(--font-muted)]">
-              Lester is not pretty. He is not polite. He is, however, always
-              hungry. Click him to drop food from above and he will handle the
-              rest. His eyes follow your cursor — unless he is asleep, in which
-              case he does absolutely nothing.
+              Lester is not pretty. He is not polite. He is, however, always hungry. Click
+              anywhere in the stage to drop a meatball, then watch him waddle over and eat
+              it. His eyes follow your cursor, unless he is asleep, in which case he does
+              absolutely nothing.
             </p>
 
             <div className="my-6 hairline" />
@@ -870,15 +1162,11 @@ export function Mascot() {
                   <span
                     className={cn(
                       "relative inline-flex h-2.5 w-2.5 rounded-full",
-                      sleeping
-                        ? "bg-[var(--font-muted)]"
-                        : "bg-[var(--accent)]"
+                      sleeping ? "bg-[var(--font-muted)]" : "bg-[var(--accent)]"
                     )}
                   />
                 </span>
-                <span className="text-sm text-[var(--font-color)]">
-                  {status}
-                </span>
+                <span className="text-sm text-[var(--font-color)]">{status}</span>
               </div>
 
               <div
@@ -902,7 +1190,7 @@ export function Mascot() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             {ACTIONS.map((action) => {
               const Icon = action.icon;
 
@@ -911,7 +1199,7 @@ export function Mascot() {
                   key={action.id}
                   type="button"
                   onClick={() => handleAction(action.id)}
-                  className="group flex min-h-[104px] flex-col items-start justify-between gap-3 rounded-2xl border border-[var(--border-color)] bg-[var(--layer-100)] p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--accent)] hover:bg-[var(--layer-200)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--layer-000)]"
+                  className="group flex min-h-[120px] flex-col items-start justify-between gap-3 rounded-2xl border border-[var(--border-color)] bg-[var(--layer-100)] p-4 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--accent)] hover:bg-[var(--layer-200)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent)] focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--layer-000)]"
                 >
                   <Icon
                     size={24}
@@ -932,22 +1220,10 @@ export function Mascot() {
           </div>
 
           <p className="px-2 text-xs leading-relaxed text-[var(--font-muted)]">
-            Lester is mostly fur, bad decisions, and an unfillable stomach. His
-            bond meter is yours to fill.
+            Lester is mostly fur, bad decisions, and an unfillable stomach. His bond meter
+            is yours to fill.
           </p>
         </div>
-      </div>
-
-      <div className="mt-12 flex items-center gap-3 rounded-2xl border border-[var(--border-color)] bg-[var(--layer-100)] px-5 py-4 text-sm text-[var(--font-muted)]">
-        <MoonStars
-          size={20}
-          weight="duotone"
-          className="shrink-0 text-[var(--accent-2)]"
-        />
-        <span>
-          Lester naps after 30 seconds of quiet, or when you ask him to. While
-          he sleeps, he does not move a single whisker.
-        </span>
       </div>
     </section>
   );
