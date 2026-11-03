@@ -98,8 +98,8 @@ const COPY = {
     idle: { en: "Watching you (for snacks)", pt: "Observando você (em busca de petiscos)" }
   },
   hint: {
-    en: "Click anywhere to drop a sunflower seed — Tuneba will walk over and eat it",
-    pt: "Clique em qualquer lugar para soltar uma semente — Tuneba vai até ela e come"
+    en: "Click anywhere to drop a sunflower seed",
+    pt: "Clique em qualquer lugar para soltar uma semente"
   },
   panel: {
     eyebrow: { en: "Interactive mascot", pt: "Mascote interativa" },
@@ -108,12 +108,12 @@ const COPY = {
       pt: "Uma pequena hamster cinza com um apetite enorme."
     },
     body: {
-      en: "Tuneba is not pretty. She is not polite. She is, however, always hungry. Click anywhere in the stage to drop a sunflower seed, then watch her waddle over and eat it. Her eyes follow your cursor, unless she is asleep, in which case she does absolutely nothing.",
-      pt: "Tuneba não é bonita. Não é educada. Mas está sempre com fome. Clique em qualquer lugar do palco para soltar uma semente de girassol e veja-a cambalear até ela para comer. Os olhos dela seguem o cursor, a menos que esteja dormindo — nesse caso, ela não faz absolutamente nada."
+      en: "Tuneba is cute. She is not polite. She is, however, always hungry. Click anywhere in the cage to drop a sunflower seed. She is always watching you, unless she is asleep, in which case she does absolutely nothing.",
+      pt: "Tuneba é uma fofa, não é educada, mas está sempre com fome. Clique em qualquer lugar próximo para soltar uma semente de girassol. Ela está sempre te observando, a menos que esteja dormindo — nesse caso, ela não faz absolutamente nada."
     },
     footnote: {
-      en: "Tuneba is mostly fur, bad decisions, and an unfillable stomach. Her bond meter is yours to fill.",
-      pt: "Tuneba é basicamente pelo, decisões ruins e um estômago sem fundo. O medidor de vínculo é seu para preencher."
+      en: "Tuneba is mostly fur, bad decisions, and an unfillable stomach.",
+      pt: "Tuneba é basicamente pelo, decisões ruins e um estômago sem fundo."
     }
   }
 };
@@ -1525,7 +1525,7 @@ export function Mascot() {
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-3">
+          <div className="order-first grid grid-cols-3 gap-3 lg:order-none">
             {ACTIONS.map((action) => {
               const Icon = action.icon;
 
