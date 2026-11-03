@@ -253,6 +253,10 @@ export function Mascot() {
     []
   );
 
+  const maybeIncreaseBond = useCallback(() => {
+    setBond((current) => (Math.random() < 0.3 ? Math.min(5, current + 1) : current));
+  }, []);
+
   const react = (action: Reaction) => {
     const wasAsleep = sleeping;
 
@@ -270,7 +274,7 @@ export function Mascot() {
       say(options[Math.floor(Math.random() * options.length)]);
     }
 
-    setBond((current) => (Math.random() < 0.2 ? Math.min(5, current + 1) : current));
+    maybeIncreaseBond();
 
     if (moodTimer.current) clearTimeout(moodTimer.current);
     moodTimer.current = setTimeout(() => setMood("idle"), 1800);
@@ -442,7 +446,7 @@ export function Mascot() {
         () => {
           setRatPhase("eating");
           setMood("eating");
-          setBond((current) => Math.min(5, current + 1));
+          maybeIncreaseBond();
           if (moodTimer.current) clearTimeout(moodTimer.current);
         },
         foodWalkDuration(walkedDistance.current, Boolean(reduceMotion)) * 1000 + 80
@@ -497,7 +501,7 @@ export function Mascot() {
 
       return () => clearTimeout(timer);
     }
-  }, [ratPhase, reduceMotion, scheduleNextDrink]);
+  }, [maybeIncreaseBond, ratPhase, reduceMotion, scheduleNextDrink]);
 
   const nap = () => {
     if (sleepTimer.current) clearTimeout(sleepTimer.current);
