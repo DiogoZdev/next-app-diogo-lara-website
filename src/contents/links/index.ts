@@ -26,4 +26,8 @@ export const links: Array<IPage> = [
     page: { en: "Mascot", pt: "Mascote" },
     path: "/mascot",
   },
+  {
+    page: { en: "Lab", pt: "Experimentos" },
+    path: "/lab",
+  },
 ];
