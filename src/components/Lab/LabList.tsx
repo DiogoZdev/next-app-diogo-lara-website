@@ -137,8 +137,8 @@ export function LabList() {
             </h3>
             <p className="mt-2 text-sm leading-relaxed">
               {t({
-                en: "This lab is meant to grow. Next up: a drum machine, maybe.",
-                pt: "Este laboratório foi feito para crescer. A seguir: uma bateria eletrônica, talvez.",
+                en: "This lab is meant to grow. More comming soon.",
+                pt: "Este laboratório foi feito para crescer. Há mais por vir.",
               })}
             </p>
           </div>

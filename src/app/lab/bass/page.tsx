@@ -32,7 +32,7 @@ export default function BassPage() {
         </span>
 
         <h1 className="font-display text-[clamp(2.25rem,6vw,3.5rem)] font-bold leading-[1.05]">
-          <T en="Tiny Bass" pt="Baixo Minúsculo" />
+          <T en="Bass" pt="Baixo" />
         </h1>
 
         <p className="mt-4 text-base leading-relaxed text-[var(--font-muted)] md:text-lg">
