@@ -4,6 +4,7 @@ import { useLanguage } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { SpeakerHigh } from "@phosphor-icons/react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createAsymmetricDistortionCurve, createDistortionCurve, createPluckBuffer, midiToFrequency } from "../audio";
 
 const VIEWBOX_X = -10;
 const VIEWBOX_Y = -12;
@@ -117,7 +118,6 @@ const COPY = {
   },
 };
 
-const midiToFrequency = (midi: number) => 440 * Math.pow(2, (midi - 69) / 12);
 
 const midiToName = (midi: number) =>
   `${NOTE_NAMES[((midi % 12) + 12) % 12]}${Math.floor(midi / 12) - 1}`;
@@ -151,85 +151,6 @@ const fretForX = (x: number) => {
 
   return MAX_FRET;
 };
-
-function createPluckBuffer(
-  context: AudioContext,
-  frequency: number,
-  sustain = 1,
-) {
-  const sampleRate = context.sampleRate;
-  const length = Math.floor(sampleRate * 2.4 * sustain);
-  const buffer = context.createBuffer(1, length, sampleRate);
-  const data = buffer.getChannelData(0);
-
-  const period = Math.max(2, Math.round(sampleRate / frequency - 0.5));
-
-  let smooth = 0;
-  for (let i = 0; i < period; i += 1) {
-    const noise = Math.random() * 2 - 1;
-    smooth = smooth * 0.6 + noise * 0.4;
-    data[i] = smooth;
-  }
-
-  const decay = Math.min(
-    0.9999,
-    Math.pow(0.001, 1 / (frequency * 4.5 * sustain)),
-  );
-
-  for (let i = period + 1; i < length; i += 1) {
-    data[i] = decay * 0.5 * (data[i - period] + data[i - period - 1]);
-  }
-
-  let peak = 0;
-  for (let i = 0; i < length; i += 1) {
-    peak = Math.max(peak, Math.abs(data[i]));
-  }
-  const scale = peak > 0 ? 0.8 / peak : 1;
-  for (let i = 0; i < length; i += 1) {
-    data[i] *= scale;
-  }
-
-  const fade = Math.min(length, Math.floor(sampleRate * 0.12));
-  for (let i = 0; i < fade; i += 1) {
-    data[length - 1 - i] *= i / fade;
-  }
-
-  return buffer;
-}
-
-function createDistortionCurve(drive = 2) {
-  const size = 2048;
-  const curve = new Float32Array(size);
-  const normalized = Math.tanh(drive);
-
-  for (let i = 0; i < size; i += 1) {
-    const x = (i * 2) / (size - 1) - 1;
-    curve[i] = Math.tanh(x * drive) / normalized;
-  }
-
-  return curve;
-}
-
-function createAsymmetricDistortionCurve(drive = 3, bias = 0.22) {
-  const size = 2048;
-  const curve = new Float32Array(size);
-  const offset = Math.tanh(bias);
-  let peak = 0;
-
-  for (let i = 0; i < size; i += 1) {
-    const x = (i * 2) / (size - 1) - 1;
-    const y = Math.tanh(x * drive + bias) - offset;
-    curve[i] = y;
-    peak = Math.max(peak, Math.abs(y));
-  }
-
-  const scale = peak > 0 ? 1 / peak : 1;
-  for (let i = 0; i < size; i += 1) {
-    curve[i] *= scale;
-  }
-
-  return curve;
-}
 
 export function Guitar() {
   const { t } = useLanguage();

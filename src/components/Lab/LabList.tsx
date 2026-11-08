@@ -32,6 +32,16 @@ const experiments: Array<{
     icon: Guitar,
     tag: { en: "Sound", pt: "Som" },
   },
+  {
+    href: "/lab/bass",
+    title: { en: "Bass", pt: "Baixo" },
+    description: {
+      en: "A four-string bass with a deep plucked-string voice and a two-stage distortion for a heavy, fuzzy low end.",
+      pt: "Um baixo de quatro cordas com um som grave de corda pulsada e distorção em dois estágios para um grave pesado.",
+    },
+    icon: Guitar,
+    tag: { en: "Sound", pt: "Som" },
+  },
 ];
 
 export function LabList() {
@@ -61,8 +71,8 @@ export function LabList() {
 
           <GradientHeader
             text={t({
-              en: "Tiny instruments, built for the joy of sound",
-              pt: "Instrumentos minúsculos, feitos pelo prazer do som",
+              en: "instruments, built for the joy of sound",
+              pt: "Instrumentos, feitos pelo prazer do som",
             })}
             className="mt-3 text-lg md:text-xl"
           />
