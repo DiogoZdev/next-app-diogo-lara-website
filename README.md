@@ -76,6 +76,7 @@ The same commands work with `npm run <script>` or `yarn <script>`.
 2. `pnpm install` to install dependencies.
 3. `pnpm dev` while working on a page or component.
 4. `pnpm lint` and `pnpm build` before committing to catch type and lint errors.
+5. Keep commit messages descriptive and include the co-author trailer.
 
 ## Project structure
 
