@@ -70,6 +70,13 @@ Without these variables the site runs normally, but submitting the contact form 
 
 The same commands work with `npm run <script>` or `yarn <script>`.
 
+## Development workflow
+
+1. `nvm use` to match the Node.js version pinned in `.nvmrc`.
+2. `pnpm install` to install dependencies.
+3. `pnpm dev` while working on a page or component.
+4. `pnpm lint` and `pnpm build` before committing to catch type and lint errors.
+
 ## Project structure
 
 ```text
