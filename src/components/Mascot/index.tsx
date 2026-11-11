@@ -309,6 +309,15 @@ export function Mascot() {
     setBond((current) => (Math.random() < 0.3 ? Math.min(5, current + 1) : current));
   }, []);
 
+  const noticePointer = () => {
+    if (sleeping || ratPhase !== "idle" || snack || scratching) return;
+    if (mood !== "idle") return;
+
+    setMood("curious");
+    if (moodTimer.current) clearTimeout(moodTimer.current);
+    moodTimer.current = setTimeout(() => setMood("idle"), 1400);
+  };
+
   const react = (action: Reaction) => {
     const wasAsleep = sleeping;
 
@@ -601,13 +610,19 @@ export function Mascot() {
             y: [0, 0.6, -0.6, 0],
             scaleX: [1, 1.08, 0.96, 1.04, 1]
           }
-        : walking
+        : mood === "curious"
           ? {
-              x: [0, -1, 1, 0],
-              y: [0, -0.7, 0.3, 0],
-              scaleX: [1, 1.03, 0.98, 1]
+              x: [0, -1.2, 1.2, 0],
+              y: [0, -1, 0.4, 0],
+              scaleX: [1, 1.05, 1]
             }
-          : { x: 0, y: [0, -0.8, 0], scaleX: 1 };
+          : walking
+            ? {
+                x: [0, -1, 1, 0],
+                y: [0, -0.7, 0.3, 0],
+                scaleX: [1, 1.03, 0.98, 1]
+              }
+            : { x: 0, y: [0, -0.8, 0], scaleX: 1 };
 
   const noseTransition = still
     ? { duration: 0 }
@@ -615,9 +630,11 @@ export function Mascot() {
       ? { duration: 0.55, repeat: 2, ease: "easeInOut" as const }
       : mood === "eating"
         ? { duration: 0.4, repeat: 3, ease: "easeInOut" as const }
-        : walking
-          ? { duration: 0.64, repeat: Infinity, ease: "easeInOut" as const }
-          : { duration: 3.2, repeat: Infinity, ease: "easeInOut" as const };
+        : mood === "curious"
+          ? { duration: 0.5, repeat: 1, ease: "easeInOut" as const }
+          : walking
+            ? { duration: 0.64, repeat: Infinity, ease: "easeInOut" as const }
+            : { duration: 3.2, repeat: Infinity, ease: "easeInOut" as const };
 
   // The feet alternate while he waddles, and do a small happy shuffle on a greeting.
   const leftLegAnimation = still
@@ -950,6 +967,7 @@ export function Mascot() {
 
           <motion.div
             className="relative z-[8] mt-10"
+            onPointerEnter={noticePointer}
             animate={{
               x: walkX,
               y: drinking ? [0, 2, 0] : walking ? [0, -3, 0] : 0,
@@ -1232,7 +1250,7 @@ export function Mascot() {
 
                     {/* eyes */}
                     <motion.g
-                      animate={{ scaleY: eyesClosed ? 0.1 : 1 }}
+                      animate={{ scaleY: eyesClosed ? 0.1 : 1, scale: mood === "curious" ? 1.06 : 1 }}
                       transition={{ duration: 0.12 }}
                       style={{ transformOrigin: "99px 112px" }}
                     >
@@ -1251,7 +1269,7 @@ export function Mascot() {
                       </motion.g>
                     </motion.g>
                     <motion.g
-                      animate={{ scaleY: eyesClosed ? 0.1 : 1 }}
+                      animate={{ scaleY: eyesClosed ? 0.1 : 1, scale: mood === "curious" ? 1.06 : 1 }}
                       transition={{ duration: 0.12 }}
                       style={{ transformOrigin: "161px 112px" }}
                     >
